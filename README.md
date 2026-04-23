@@ -1,6 +1,10 @@
 # NivoRd Figure Scripts
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19430235.svg)](https://doi.org/10.5281/zenodo.19430235)
+
 Scripts to reproduce figures from the NivoRd manuscript (Letter to Blood).
+
+**Data deposit:** https://doi.org/10.5281/zenodo.19430235 (concept DOI, always resolves to the latest version). Current version: [10.5281/zenodo.19711926](https://doi.org/10.5281/zenodo.19711926). Data are under embargo until 2028-01-01.
 
 ## Layout
 
@@ -79,7 +83,7 @@ Zavidij GEO (auto-downloaded) ─► figure2EF_zavidij_macrophage_scoring.py ─
 
 ## Data inputs
 
-All processed data are deposited at **Zenodo [DOI to be assigned]**. Raw sequencing reads are at dbGaP [accession to be assigned]. Raw IMC images (34-channel TIFFs) are available from the corresponding authors subject to informed consent.
+All processed data are deposited at Zenodo: [10.5281/zenodo.19430235](https://doi.org/10.5281/zenodo.19430235) (concept DOI; always latest) · current version [10.5281/zenodo.19711926](https://doi.org/10.5281/zenodo.19711926). Raw sequencing reads are at dbGaP [accession to be assigned]. Raw IMC images (34-channel TIFFs) are available from the corresponding authors subject to informed consent.
 
 ### Data files on Zenodo
 
