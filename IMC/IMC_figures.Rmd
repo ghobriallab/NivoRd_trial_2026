@@ -1,0 +1,536 @@
+---
+title: "Figures"
+output: html_document
+date: "2026-03-08"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+theme_set(theme_classic())
+
+# ================================================================
+# CONFIG: set DATA_DIR to the local path where the IMC data lives.
+# Expected subpaths:
+#   ${DATA_DIR}/outs/phenotyped-obs.csv
+#   ${DATA_DIR}/outs/combat_all_markers.csv
+#   ${DATA_DIR}/CN_data/pheno_8clus-cells_data.csv
+#   ${DATA_DIR}/CN_data/pheno_8clus-sample_pct.csv
+#   ${DATA_DIR}/nivo_clinical.csv
+#   ${DATA_DIR}/nivo_md.csv
+#   ${DATA_DIR}/nivo_MSPike.csv
+# Output figures are written to ${DATA_DIR}/figures/.
+# Processed CSVs are deposited at the Zenodo DOI listed in the README.
+# ================================================================
+DATA_DIR <- Sys.getenv("NIVO_IMC_DATA_DIR", unset = "/mnt/disks/data/imc/Nivo/")
+if (!endsWith(DATA_DIR, "/")) DATA_DIR <- paste0(DATA_DIR, "/")
+FIG_DIR <- paste0(DATA_DIR, "figures/")
+dir.create(FIG_DIR, showWarnings = FALSE, recursive = TRUE)
+message("Using DATA_DIR = ", DATA_DIR)
+
+all_comp = rev(list(
+  c('good_Baseline','good_PostNivo'),
+  c('good_Baseline','poor_Baseline'),
+  c('good_PostNivo','poor_PostNivo'),
+  c('poor_Baseline','poor_PostNivo')
+))
+
+aes = c('good'='dodgerblue',
+        'poor'='maroon',
+        "good_Baseline"='lightblue',      # light green
+        "good_PostNivo"='dodgerblue',      # forest green (medium)
+        "poor_Baseline"='#FFB6C1',      # light coral
+        "poor_PostNivo"='#B22222')      # firebrick (medium-dark red)
+
+library(effsize)
+
+# Cohen's D calculator for all_comp
+calc_cohens_d <- function(dat, value_col, all_comp) {
+  for (comp in all_comp) {
+    g1 <- dat[[value_col]][dat$x == comp[1]]
+    g2 <- dat[[value_col]][dat$x == comp[2]]
+    if (length(g1) > 0 & length(g2) > 0) {
+      d <- cohen.d(g1, g2)$estimate
+      cat(sprintf("%s vs %s: d = %.2f\n", comp[1], comp[2], d))
+    }
+  }
+}
+
+all_comp = rev(list(
+  c('good_Baseline','good_PostNivo'),
+  c('good_Baseline','poor_Baseline'),
+  c('good_PostNivo','poor_PostNivo'),
+  c('poor_Baseline','poor_PostNivo')
+))
+```
+
+## Legend
+
+```{r fig.height=3, fig.width=3}
+
+dat = read.csv(paste0(DATA_DIR, 'nivo_clinical.csv')) %>% 
+  left_join(
+    read.csv(paste0(DATA_DIR, 'nivo_md.csv')) %>% select(pt,tp,reponse,group) %>% distinct()
+  ) %>% 
+  left_join(read.csv(paste0(DATA_DIR, 'nivo_MSPike.csv'))) %>% 
+  mutate(PC_pct=as.numeric(gsub("[^0-9.]", "", PC_pct))) %>% 
+  mutate(PC_asp=as.numeric(gsub("[^0-9.]", "", PC_asp))) 
+  
+dat$group[(dat$pt=='Patient3')&(dat$tp=='Baseline')]='poor'
+dat$x = paste0(dat$group,'_',dat$tp)
+  
+dat %>% 
+  ggplot(aes(x, PC_pct, fill = x)) +
+  geom_col() +
+  scale_fill_manual(
+    values = aes,
+    labels = c("R, pre", "R, post", "NR, pre", "NR, post")
+  )->pl
+pl
+ggsave(filename = paste0(DATA_DIR, 'figures/LEGEND.pdf'), 
+       plot = pl, dpi=300, height=3, width=2)
+ggsave(filename = paste0(DATA_DIR, 'figures/LEGEND.svg'), 
+       plot = pl, height=3, width=2)
+
+```
+
+## Clinical tumour burden metrics
+
+```{r fig.height=3, fig.width=2}
+dat = read.csv(paste0(DATA_DIR, 'nivo_clinical.csv')) %>% 
+  left_join(
+    read.csv(paste0(DATA_DIR, 'nivo_md.csv')) %>% select(pt,tp,reponse,group) %>% distinct()
+  ) %>% 
+  left_join(read.csv(paste0(DATA_DIR, 'nivo_MSPike.csv'))) %>% 
+  mutate(PC_pct=as.numeric(gsub("[^0-9.]", "", PC_pct))) %>% 
+  mutate(PC_asp=as.numeric(gsub("[^0-9.]", "", PC_asp))) 
+  
+dat$group[(dat$pt=='Patient3')&(dat$tp=='Baseline')]='poor'
+dat$x = paste0(dat$group,'_',dat$tp)
+  
+dat %>% 
+  ggplot(aes(x,PC_pct))+
+  geom_boxplot(aes(fill=x),alpha=0.6)+geom_point()+geom_line(aes(group=pt))+
+  ggpubr::stat_compare_means(comparisons = all_comp, method = 't.test',size=3.5)+
+  scale_fill_discrete(labels = c("R, pre", "R, post", "NR, pre", "NR, post"))+
+  scale_fill_manual(values = aes)+
+  labs(y='CD138+ % (trephine)')+
+  theme(
+    axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank(),
+    legend.position = 'none'
+  )->pl
+pl
+ggsave(filename = paste0(DATA_DIR, 'figures/box-TrephinePct.pdf'), 
+       plot = pl, dpi=300, height=3, width=2)
+ggsave(filename = paste0(DATA_DIR, 'figures/box-TrephinePct.svg'), 
+       plot = pl, height=3, width=2)
+
+print('PC_pct')
+calc_cohens_d(dat, 'PC_pct', all_comp)
+
+dat %>% ggplot(aes(x,Mspike))+
+  geom_boxplot(aes(fill=x),alpha=0.6)+geom_point()+geom_line(aes(group=pt))+
+  ggpubr::stat_compare_means(comparisons = all_comp, method = 't.test',size=3.5)+
+  scale_fill_discrete(labels = c("R, pre", "R, post", "NR, pre", "NR, post"))+
+  scale_fill_manual(values = aes)+
+  labs(y='M-spike')+
+  theme(
+    axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank(),
+    legend.position = 'none'
+    )->pl
+pl
+ggsave(filename = paste0(DATA_DIR, 'figures/box-MSpike.pdf'), 
+       plot = pl, dpi=300, height=3, width=2)
+ggsave(filename = paste0(DATA_DIR, 'figures/box-MSpike.svg'), 
+       plot = pl, height=3, width=2)
+
+print('Mspike')
+calc_cohens_d(dat, 'Mspike', all_comp)
+```
+
+
+
+## IMC tumour burden % all
+
+```{r fig.height=3, fig.width=2}
+
+obs = read.csv(paste0(DATA_DIR, 'outs/phenotyped-obs.csv')) %>% 
+  mutate(group=ifelse(pt=='Patient9','good',group)) %>% 
+  mutate(pt_tp=paste0(pt,'_',tp)) 
+
+dat = obs %>% 
+  #filter(! pheno %in% c('Unclassified')) %>% 
+  group_by(pt_tp,pheno) %>% tally() %>% ungroup() %>% 
+  group_by(pt_tp) %>% mutate(p=n/sum(n)*100) %>% ungroup() %>% select(-n) %>% 
+  pivot_wider(names_from=pheno,values_from=p,values_fill=0) %>% 
+  pivot_longer(!pt_tp,names_to='pheno',values_to='p') %>% 
+  left_join(obs %>% select(pt_tp,pt,tp,group,exceptional) %>% distinct()) %>% 
+  mutate(exceptional=exceptional==1) %>% 
+  mutate(group=factor(group,c('poor','good'))) %>% 
+  mutate(x=paste0(group,'_',tp))
+
+ph='PC'
+dat %>% 
+  filter(pheno==ph) %>% 
+  ggplot(aes(x,p))+
+  geom_boxplot(aes(fill=x),alpha=0.6)+geom_point()+geom_line(aes(group=pt))+
+  ggpubr::stat_compare_means(comparisons = all_comp, method = 't.test',size=3.5)+
+  scale_fill_discrete(labels = c("R, pre", "R, post", "NR, pre", "NR, post"))+
+  scale_fill_manual(values = aes)+
+  labs(y='PC % total cells',title='PC')+
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank(),
+    legend.position = 'none'
+  )->pl
+print(pl)
+ggsave(filename = paste0(paste0(DATA_DIR, 'figures/box-All-'),ph,'.pdf'), 
+       plot = pl, dpi=300, height=3, width=2)
+ggsave(filename = paste0(paste0(DATA_DIR, 'figures/box-All-'),ph,'.svg'), 
+       plot = pl, height=3, width=2)
+
+print("PC %")
+calc_cohens_d(dat[dat$pheno==ph,], 'p', all_comp)
+
+```
+
+## IMC CN overview
+
+```{r fig.height=3, fig.width=4}
+
+cells = read_csv(paste0(DATA_DIR, "CN_data/pheno_8clus-cells_data.csv"))
+
+dat = cells %>% group_by(cn_labels,pheno) %>% tally() %>% ungroup() %>% 
+  group_by(cn_labels) %>% mutate(pct=n/sum(n)*100)
+
+cn_order = paste0('CN',0:7)
+
+dat %>% mutate(cn_labels=factor(cn_labels,(cn_order))) %>% 
+  ggplot(aes(cn_labels,pct,fill=pheno))+geom_col()+
+  scale_fill_brewer(palette = 'Paired')+
+  labs(x='CN',y='% cells')+
+  theme(
+    axis.title.x = element_blank(), legend.title = element_blank(),
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 12)
+  )->pl
+pl
+ggsave(filename = paste0(DATA_DIR, 'figures/bar-CN_overview.pdf'), 
+       plot = pl, dpi=300, height=3, width=4)
+ggsave(filename = paste0(DATA_DIR, 'figures/bar-CN_overview.svg'), 
+       plot = pl, height=3, width=4)
+
+
+```
+
+## [WIP] IMC CN visual example 
+
+CN3 (PC)
+```{r}
+cells = read_csv(paste0(DATA_DIR, "CN_data/pheno_8clus-cells_data.csv"))
+
+dat = cells %>% filter(sample_id=='Patient1_Baseline_001')
+
+dat %>% filter(x<250,y>350) %>% 
+  ggplot(aes(x,y))+geom_point(aes(color=cn_labels=='CN3'), size=3)+coord_fixed()
+dat %>% filter(x<250,y>350) %>% 
+  ggplot(aes(x,y))+geom_point(aes(color=pheno=='PC'), size=3)+coord_fixed()
+
+```
+
+CN3/6 (Mac/Mye)
+```{r}
+cells = read_csv(paste0(DATA_DIR, "CN_data/pheno_8clus-cells_data.csv"))
+
+cells %>% filter(cn_labels=='CN2') %>% group_by(sample_id) %>% tally() %>% arrange(-n)
+
+dat = cells %>% filter(sample_id=='Patient6_PostNivo_004')
+dat %>% #filter(x>550, x<800,y>350,y<600) %>% 
+  ggplot(aes(x,y))+geom_point(aes(color=cn_labels=='CN2'), size=1)+coord_fixed()
+dat %>% #filter(x>550, x<800,y>350,y<600) %>% 
+  ggplot(aes(x,y))+geom_point(aes(color=pheno=='Mac'), size=1)+coord_fixed()
+
+
+dat = cells %>% filter(sample_id=='Patient7_PostNivo_001')
+dat %>% filter(x>550, x<800,y>350,y<600) %>% 
+  ggplot(aes(x,y))+geom_point(aes(color=cn_labels=='CN2'), size=1)+coord_fixed()
+dat %>% filter(x>550, x<800,y>350,y<600) %>% 
+  ggplot(aes(x,y))+geom_point(aes(color=pheno=='Mac'), size=1)+coord_fixed()
+
+
+```
+
+
+
+## IMC cell %
+
+```{r fig.height=3, fig.width=2}
+
+obs = read.csv(paste0(DATA_DIR, 'outs/phenotyped-obs.csv')) %>% 
+  mutate(group=ifelse(pt=='Patient9','good',group)) %>% 
+  mutate(pt_tp=paste0(pt,'_',tp)) 
+
+dat = obs %>% 
+  filter(! pheno %in% c('Unclassified')) %>% 
+  group_by(pt_tp,pheno) %>% tally() %>% ungroup() %>% 
+  group_by(pt_tp) %>% mutate(p=n/sum(n)*100) %>% ungroup() %>% select(-n) %>% 
+  pivot_wider(names_from=pheno,values_from=p,values_fill=0) %>% 
+  pivot_longer(!pt_tp,names_to='pheno',values_to='p') %>% 
+  left_join(obs %>% select(pt_tp,pt,tp,group,exceptional) %>% distinct()) %>% 
+  mutate(exceptional=exceptional==1) %>% 
+  mutate(group=factor(group,c('poor','good'))) %>% 
+  mutate(x=paste0(group,'_',tp))
+
+for ( ph in unique(dat$pheno) ){
+
+dat %>% 
+  filter(pheno==ph) %>% 
+  ggplot(aes(x,p))+
+  geom_boxplot(aes(fill=x),alpha=0.6)+geom_point()+geom_line(aes(group=pt))+
+  ggpubr::stat_compare_means(comparisons = all_comp, method = 't.test',size=3.5)+
+  scale_fill_discrete(labels = c("R, pre", "R, post", "NR, pre", "NR, post"))+
+  scale_fill_manual(values = aes)+
+  labs(y='cells %',title=ph)+
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank(),
+    legend.position = 'none'
+  )->pl
+print(pl)
+ggsave(filename = paste0(paste0(DATA_DIR, 'figures/box-LinP-'),ph,'.pdf'), 
+       plot = pl, dpi=300, height=3, width=2)
+ggsave(filename = paste0(paste0(DATA_DIR, 'figures/box-LinP-'),ph,'.svg'), 
+       plot = pl, height=3, width=2)
+
+print(ph)
+print('%, cohens')
+calc_cohens_d(dat[dat$pheno==ph,], 'p', all_comp)
+
+print('$$$$$$$$$')
+print(ph)
+print('poor')
+dat %>% filter(pheno==ph, group=='poor') %>% select(pt,tp,p) %>% 
+  pivot_wider(names_from='tp',values_from='p') %>% drop_na() -> df2
+print(t.test(df2$Baseline, df2$PostNivo, paired = TRUE)$p.value)
+print('good')
+dat %>% filter(pheno==ph, group=='good') %>% select(pt,tp,p) %>% 
+  pivot_wider(names_from='tp',values_from='p') %>% drop_na() -> df2
+print(t.test(df2$Baseline, df2$PostNivo, paired = TRUE)$p.value)
+
+}
+
+```
+
+## IMC CD4/8 ratio
+
+```{r fig.height=3, fig.width=2}
+
+obs = read.csv(paste0(DATA_DIR, 'outs/phenotyped-obs.csv')) %>% 
+  mutate(group=ifelse(pt=='Patient9','good',group)) %>% 
+  mutate(pt_tp=paste0(pt,'_',tp)) 
+
+dat = obs %>% 
+  filter(! pheno %in% c('Unclassified')) %>% 
+  group_by(pt_tp,pheno) %>% tally() %>% ungroup() %>% 
+  group_by(pt_tp) %>% mutate(p=n/sum(n)*100) %>% ungroup() %>% select(-n) %>% 
+  pivot_wider(names_from=pheno,values_from=p,values_fill=0) %>% 
+  pivot_longer(!pt_tp,names_to='pheno',values_to='p') %>% 
+  left_join(obs %>% select(pt_tp,pt,tp,group,exceptional) %>% distinct()) %>% 
+  mutate(exceptional=exceptional==1) %>% 
+  mutate(group=factor(group,c('poor','good'))) %>% 
+  mutate(x=paste0(group,'_',tp))
+
+dat.r48 = dat %>% 
+  filter(pheno %in% c('T4','T8')) %>% 
+  select(x,pt,pt_tp,pheno,p) %>% pivot_wider(names_from = pheno, values_from=p) %>% 
+  mutate(r48=T4/T8)
+
+dat.r48 %>% 
+  ggplot(aes(x,r48))+
+  geom_boxplot(aes(fill=x),alpha=0.6)+geom_point()+geom_line(aes(group=pt))+
+  ggpubr::stat_compare_means(comparisons = all_comp, method = 't.test',size=3.5)+
+  scale_fill_discrete(labels = c("R, pre", "R, post", "NR, pre", "NR, post"))+
+  scale_fill_manual(values = aes)+
+  labs(y='CD4/CD8 ratio')+
+  theme(
+    axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank(),
+    legend.position = 'none'
+  )->pl
+pl
+ggsave(filename = paste0(DATA_DIR, 'figures/box-CD4.8_ratio.pdf'), 
+       plot = pl, dpi=300, height=3, width=2)
+ggsave(filename = paste0(DATA_DIR, 'figures/box-CD4.8_ratio.svg'), 
+       plot = pl, height=3, width=2)
+
+print('CD4/CD8 ratio')
+calc_cohens_d(dat.r48, 'r48', all_comp)
+```
+
+## IMC CN %
+
+```{r fig.height=3, fig.width=2}
+
+cells = read_csv(paste0(DATA_DIR, "CN_data/pheno_8clus-cells_data.csv"))
+sample_pct = read_csv(paste0(DATA_DIR, "CN_data/pheno_8clus-sample_pct.csv"))
+obs = read.csv(paste0(DATA_DIR, 'outs/phenotyped-obs.csv')) %>% 
+  mutate(group=ifelse(pt=='Patient9','good',group)) %>% 
+  mutate(pt_tp=paste0(pt,'_',tp)) 
+
+dat = sample_pct %>% 
+  pivot_longer(!sample_id,names_to='cn',values_to='pct') %>% 
+  left_join(obs %>% select(sample_id,pt_tp) %>% distinct()) %>% 
+  group_by(pt_tp,cn) %>% summarize(pct=mean(pct)) %>% ungroup() %>% 
+  pivot_wider(names_from=cn,values_from=pct,values_fill=0) %>% 
+  pivot_longer(!pt_tp,names_to='cn',values_to='p') %>% 
+  left_join(obs %>% select(pt_tp,pt,tp,group,exceptional) %>% distinct()) %>% 
+  mutate(group=factor(group,c('poor','good')))
+dat$x = paste0(dat$group,'_',dat$tp)
+
+
+for ( CN in unique(dat$cn) ){
+
+dat %>% 
+  filter(cn==CN) %>% 
+  ggplot(aes(x,p))+
+  geom_boxplot(aes(fill=x),alpha=0.6)+geom_point()+geom_line(aes(group=pt))+
+  ggpubr::stat_compare_means(comparisons = all_comp, method = 't.test',size=3.5)+
+  scale_fill_discrete(labels = c("R, pre", "R, post", "NR, pre", "NR, post"))+
+  scale_fill_manual(values = aes)+
+  labs(y='% cells',title=CN)+
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank(),
+    legend.position = 'none'
+  )->pl
+print(pl)
+ggsave(filename = paste0(paste0(DATA_DIR, 'figures/box-'),CN,'.pdf'), 
+       plot = pl, dpi=300, height=3, width=2)
+ggsave(filename = paste0(paste0(DATA_DIR, 'figures/box-'),CN,'.svg'), 
+       plot = pl, height=3, width=2)
+
+print(CN)
+calc_cohens_d(dat[dat$cn==CN,], 'p', all_comp)
+
+
+print('$$$$$$$$$')
+print(CN)
+print('poor')
+dat %>% filter(cn==CN) %>% select(pt,tp,p) %>% 
+  pivot_wider(names_from='tp',values_from='p') %>% drop_na() -> df2
+print(t.test(df2$Baseline, df2$PostNivo, paired = TRUE)$p.value)
+print('good')
+dat %>% filter(cn==CN, group=='good') %>% select(pt,tp,p) %>% 
+  pivot_wider(names_from='tp',values_from='p') %>% drop_na() -> df2
+print(t.test(df2$Baseline, df2$PostNivo, paired = TRUE)$p.value)
+
+}
+
+
+```
+
+
+
+## IMC CD4/8 ratio and CN %
+
+```{r fig.height=3, fig.width=6}
+
+cells = read_csv(paste0(DATA_DIR, "CN_data/pheno_8clus-cells_data.csv"))
+sample_pct = read_csv(paste0(DATA_DIR, "CN_data/pheno_8clus-sample_pct.csv"))
+obs = read.csv(paste0(DATA_DIR, 'outs/phenotyped-obs.csv')) %>% 
+  mutate(group=ifelse(pt=='Patient9','good',group)) %>% 
+  mutate(pt_tp=paste0(pt,'_',tp)) 
+
+dat = sample_pct %>% 
+  pivot_longer(!sample_id,names_to='cn',values_to='pct') %>% 
+  left_join(obs %>% select(sample_id,pt_tp) %>% distinct()) %>% 
+  group_by(pt_tp,cn) %>% summarize(pct=mean(pct)) %>% ungroup() %>% 
+  pivot_wider(names_from=cn,values_from=pct,values_fill=0) %>% 
+  pivot_longer(!pt_tp,names_to='cn',values_to='p') %>% 
+  left_join(obs %>% select(pt_tp,pt,tp,group,exceptional) %>% distinct()) %>% 
+  mutate(group=factor(group,c('poor','good')))
+dat$x = paste0(dat$group,'_',dat$tp)
+dat.CN = dat
+
+dat.r48 = obs %>% 
+  filter(! pheno %in% c('Unclassified')) %>% 
+  group_by(pt_tp,pheno) %>% tally() %>% ungroup() %>% 
+  group_by(pt_tp) %>% mutate(p=n/sum(n)*100) %>% ungroup() %>% select(-n) %>% 
+  pivot_wider(names_from=pheno,values_from=p,values_fill=0) %>% 
+  pivot_longer(!pt_tp,names_to='pheno',values_to='p') %>% 
+  left_join(obs %>% select(pt_tp,pt,tp,group,exceptional) %>% distinct()) %>% 
+  mutate(exceptional=exceptional==1) %>% 
+  mutate(group=factor(group,c('poor','good'))) %>% 
+  mutate(x=paste0(group,'_',tp)) %>% 
+  filter(pheno %in% c('T4','T8')) %>% 
+  select(x,pt,pt_tp,pheno,p) %>% pivot_wider(names_from = pheno, values_from=p) %>% 
+  mutate(r48=T4/T8) 
+
+dat.r48 %>% left_join(dat.CN) %>% 
+  filter(cn %in% c('CN2','CN4')) %>% 
+  ggplot(aes(r48,p))+facet_grid(~cn)+
+  geom_point(aes(fill=x),alpha=0.6,shape=21,size=3)+
+  geom_smooth(method='lm',color='black')+
+  ggpubr::stat_cor(label.y=30)+
+  labs(x='CD4/CD8 ratio', y='% CNs')+
+  scale_fill_manual(values = aes)->pl
+print(pl)
+ggsave(filename = paste0(DATA_DIR, 'figures/cor-T4.8_CN.pdf'), 
+       plot = pl, dpi=300, height=3, width=6)
+ggsave(filename = paste0(DATA_DIR, 'figures/cor-T4.8_CN.svg'), 
+       plot = pl, height=3, width=6)
+
+```
+
+
+
+## PD-L1 expression
+
+
+```{r fig.height=3, fig.width=2}
+
+obs = read.csv(paste0(DATA_DIR, 'outs/phenotyped-obs.csv')) %>% 
+  mutate(group=ifelse(pt=='Patient9','good',group)) %>% 
+  mutate(pt_tp=paste0(pt,'_',tp)) 
+
+
+df = cells %>% 
+  select(pheno,sample_id,index) %>% 
+  left_join(read.csv(paste0(DATA_DIR, 'outs/combat_all_markers.csv')) %>% select(-X))
+
+df[['exp']] = df[['PDL1']]
+
+for (pheno_ in c('Mac','PC','Myeloid')){
+
+dat = df %>% 
+  left_join(obs %>% select(sample_id,pt,tp,group) %>% distinct()) %>% 
+  mutate(exp = ifelse(ntile(exp,10)>9,'hi','lo')) %>% 
+  select(pt,group,tp,pheno,exp) %>% filter(pheno==pheno_) %>% 
+  group_by(pt,group,tp,exp) %>% tally() %>% 
+  pivot_wider(names_from=exp,values_from=n,values_fill=1) %>% mutate(pct=hi/(hi+lo)*100)
+dat$x = paste0(dat$group,'_',dat$tp)
+dat.exp = dat
+
+dat.exp %>% 
+  ggplot(aes(x,pct))+
+  geom_boxplot(aes(fill=x),alpha=0.6)+geom_point()+geom_line(aes(group=pt))+
+  ggpubr::stat_compare_means(comparisons = all_comp, method = 't.test',size=3.5)+
+  scale_fill_discrete(labels = c("R, pre", "R, post", "NR, pre", "NR, post"))+
+  scale_fill_manual(values = aes)+
+  labs(y='% PD-L1 high',title=pheno_)+
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank(),
+    legend.position = 'none'
+  )->pl
+print(pl)
+ggsave(filename = paste0(paste0(DATA_DIR, 'figures/box-PDL1_'),pheno_,'.pdf'), 
+       plot = pl, dpi=300, height=3, width=2)
+ggsave(filename = paste0(paste0(DATA_DIR, 'figures/box-PDL1_'),pheno_,'.svg'), 
+       plot = pl, height=3, width=2)
+
+print(pheno_)
+calc_cohens_d(dat.exp, 'pct', all_comp)
+
+}
+
+
+```
