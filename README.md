@@ -2,8 +2,6 @@
 
 **Manuscript:** *Macrophage reprogramming, not CD8 T cell dynamics, characterizes durable disease control following PD-1 blockade in smoldering myeloma*
 
-**Status:** Letter to *Leukemia* (under review)
-
 **Trial:** NivoRd, single-arm phase II (NCT02903381; Dana-Farber IRB 16-242).
 n=8 patients with high-risk smoldering multiple myeloma treated with
 nivolumab + lenalidomide + dexamethasone.
@@ -11,8 +9,7 @@ nivolumab + lenalidomide + dexamethasone.
 **Data:** [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19430235.svg)](https://doi.org/10.5281/zenodo.19430235)
 The associated processed data deposit on Zenodo is referenced via concept
 DOI `10.5281/zenodo.19430235`; the v4-DOR snapshot is at record
-`19988651` (DOI `10.5281/zenodo.19988651`). See also the deposit's
-own README and DATA_DICTIONARY.
+`19988651` (DOI `10.5281/zenodo.19988651`).
 
 ## Setup
 
