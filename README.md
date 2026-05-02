@@ -97,4 +97,4 @@ files; the full deposit is ~230 MB.
 
 ## Contact
 
-Noé Perron — noeperron01@gmail.com — Ghobrial Lab, Dana-Farber Cancer Institute
+Ghobrial Laboratory, Dana-Farber Cancer Institute. For questions, open an issue at https://github.com/GhobrialLab/NivoRd_trial_2026/issues.
