@@ -28,11 +28,16 @@ from pathlib import Path
 RECORD_ID = 19988651
 
 # (filename, expected size in bytes)
+# README.md and DATA_DICTIONARY.md sizes are checked loosely (>0) since
+# they are routinely re-uploaded with description tweaks.
 FILES = [
-    ("README.md", 5694),
-    ("DATA_DICTIONARY.md", 7613),
+    ("README.md", None),
+    ("DATA_DICTIONARY.md", None),
     ("LICENSE", 835),
     ("IMC-import.h5ad", 16836901),
+    # Nivo-only filtered (external NBM / ELO reference cohorts removed pre-deposit).
+    ("CD138neg_immune_cells.h5ad", 151844414),
+    ("CD138pos_tumor_cells.h5ad", 53967587),
     ("phenotyped_canonical.csv", 7152685),
     ("pheno_8clus-sample_pct.csv", 10711),
     ("pheno_8clus-cn_centers.csv", 753),
@@ -50,11 +55,15 @@ DEST = Path(os.environ.get("NIVO_DATA_DIR", str(Path(__file__).resolve().parent 
 URL_TEMPLATE = "https://zenodo.org/records/{record_id}/files/{filename}"
 
 
-def fetch(filename: str, expected_size: int) -> None:
+def fetch(filename: str, expected_size: int | None) -> None:
     url = URL_TEMPLATE.format(record_id=RECORD_ID, filename=filename)
     target = DEST / filename
-    if target.exists() and target.stat().st_size == expected_size:
-        print(f"[ok ] {filename} (already present, {expected_size} bytes)")
+    if target.exists() and (
+        expected_size is None and target.stat().st_size > 0
+        or expected_size is not None and target.stat().st_size == expected_size
+    ):
+        size_text = f"{target.stat().st_size} bytes"
+        print(f"[ok ] {filename} (already present, {size_text})")
         return
     print(f"[get] {filename} <- {url}")
     try:
@@ -70,7 +79,7 @@ def fetch(filename: str, expected_size: int) -> None:
               f"https://zenodo.org/uploads/{RECORD_ID} via the web UI.")
         sys.exit(1)
     actual = target.stat().st_size
-    if actual != expected_size:
+    if expected_size is not None and actual != expected_size:
         print(f"[warn] {filename}: size mismatch (got {actual}, expected {expected_size})")
     else:
         print(f"[ok ] {filename} ({actual} bytes)")

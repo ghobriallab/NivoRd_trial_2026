@@ -30,10 +30,12 @@ variable is read by `_common.py` so figure scripts will pick up the
 custom path.
 
 The scRNA-seq h5ads (`CD138neg_immune_cells.h5ad`,
-`CD138pos_tumor_cells.h5ad`) are not yet on Zenodo (pending barcode
-metadata scrubbing). Figure scripts that need them will error until
-they are released or fetched separately via controlled access; see the
-Figure-to-script table below for which scripts are affected.
+`CD138pos_tumor_cells.h5ad`) are part of the v4-DOR deposit
+(`19988651`), filtered to NivoRd trial cells only (Source ∈
+{`Nivo`, `Nivo_post`}; external NBM / ELO reference cohorts removed
+prior to deposit and available from their original published sources).
+`download_data.py` fetches them by default along with the IMC and CSV
+files; the full deposit is ~230 MB.
 
 ## Figure-to-script mapping
 

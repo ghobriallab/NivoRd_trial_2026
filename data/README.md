@@ -25,15 +25,21 @@ scripts.
 
 ## What is on Zenodo (and what is not)
 
-See the deposit's own README and DATA_DICTIONARY for the full list. Note:
+See the deposit's own README and DATA_DICTIONARY for the full list. The
+v4-DOR deposit (record `19988651`) now contains:
 
-- The CD138-negative immune-cell and CD138-positive tumor-cell
-  scRNA-seq h5ads (`CD138neg_immune_cells.h5ad`,
-  `CD138pos_tumor_cells.h5ad`) are **not** in the v4-DOR deposit pending
-  scrubbing of dates from cell-barcode metadata. They are needed for
-  Fig 2A–F and Supp S2A/S2B/S2E. Until they are added to a future
-  Zenodo version, these scripts will not run end-to-end. Contact the
-  authors for controlled-access copies.
-- Master DGE / GSEA result CSVs from the Letter-to-Blood era are NOT
-  in the v4-DOR deposit; they have been superseded by the per-figure
-  outputs the scripts now generate locally.
+- IMC AnnData (`IMC-import.h5ad`) and per-cell phenotype tables.
+- Per-sample IMC summary tables and the cellular-neighborhood (CN)
+  centers / per-sample percentages.
+- LIANA differential ligand-receptor interaction tables (Macrophage ↔
+  CD4-T and Macrophage ↔ Plasma-cell, pretreatment).
+- The two scRNA-seq AnnData files
+  (`CD138neg_immune_cells.h5ad`, `CD138pos_tumor_cells.h5ad`) needed for
+  Fig 2A–F and Supp S2A/S2B/S2E.
+- Cytogenetic-validation tables, the MSigDB Hallmark 2020 GMT, the
+  per-patient response classifier table, the IMC antibody panel, README,
+  DATA_DICTIONARY, and LICENSE.
+
+Master DGE / GSEA result CSVs from the Letter-to-Blood era are NOT in
+the v4-DOR deposit; they have been superseded by the per-figure outputs
+the scripts now generate locally.
