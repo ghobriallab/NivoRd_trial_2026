@@ -7,8 +7,9 @@ import numpy as np
 import pandas as pd
 from scipy.sparse import issparse
 
-INPUT = "CD138neg_immune_cells.h5ad"
-OUTPUT = "FigureS2A_celltype_markers_heatmap"
+import sys; sys.path.insert(0, "."); from _common import FIG_DIR, H5AD_IMMUNE
+INPUT = str(H5AD_IMMUNE)
+OUTPUT = str(FIG_DIR / "SuppFigS2A")
 CELLTYPE_COL = "celltype_refined"
 
 RENAME = {"B": "B Cells", "DC": "Dendritic Cells"}
@@ -72,6 +73,6 @@ cbar = plt.colorbar(im, ax=ax, fraction=0.025, pad=0.04)
 cbar.set_label("Z-score", fontsize=11, fontweight="bold")
 
 plt.tight_layout()
-for fmt in ["pdf", "png", "svg"]:
+for fmt in ["pdf", "svg"]:
     fig.savefig(f"{OUTPUT}.{fmt}", dpi=300, bbox_inches="tight", facecolor="white")
 plt.close()

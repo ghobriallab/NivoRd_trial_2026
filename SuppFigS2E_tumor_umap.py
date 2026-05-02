@@ -5,8 +5,9 @@ import anndata as ad
 import scanpy as sc
 import matplotlib.pyplot as plt
 
-INPUT = "CD138pos_tumor_cells.h5ad"
-OUTPUT = "FigureS2E_CD138pos_UMAP_by_patient"
+import sys; sys.path.insert(0, "."); from _common import FIG_DIR, H5AD_TUMOR
+INPUT = str(H5AD_TUMOR)
+OUTPUT = str(FIG_DIR / "SuppFigS2E")
 PATIENT_COL = "patient"
 
 RESPONSE_MAP = {
@@ -63,6 +64,6 @@ ax.set_xlabel("UMAP 1", fontsize=13, fontweight="bold")
 ax.set_ylabel("UMAP 2", fontsize=13, fontweight="bold")
 
 plt.tight_layout(pad=0.5)
-for fmt in ["pdf", "png", "svg"]:
+for fmt in ["pdf", "svg"]:
     fig.savefig(f"{OUTPUT}.{fmt}", dpi=300, bbox_inches="tight", facecolor="white")
 plt.close()

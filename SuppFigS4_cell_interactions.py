@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Supplementary Figure S4B-C: Ligand-receptor interaction analysis.
-(B) Plasma cell-macrophage axis  (C) CD4 T cell-macrophage axis
+"""Supplementary Figure S4A-B: Ligand-receptor interaction analysis.
+(A) Plasma cell-macrophage axis  (B) CD4 T cell-macrophage axis
 """
 
 import matplotlib.pyplot as plt
@@ -8,9 +8,10 @@ from matplotlib.patches import Patch
 import numpy as np
 import pandas as pd
 
-INPUT_PM = "differential_plasma_macrophage_pretreatment.csv"
-INPUT_CD4 = "differential_cd4_macrophage_pretreatment.csv"
-OUTPUT = "FigureS4BC_cell_interactions"
+import sys; sys.path.insert(0, "."); from _common import FIG_DIR, DATA_LOCAL
+INPUT_PM = str(DATA_LOCAL / "differential_plasma_macrophage_pretreatment.csv")
+INPUT_CD4 = str(DATA_LOCAL / "differential_cd4_macrophage_pretreatment.csv")
+OUTPUT = str(FIG_DIR / "SuppFigS4")
 
 COLOR_R, COLOR_NR = "#2980b9", "#e74c3c"
 
@@ -56,12 +57,12 @@ cd4m = pd.read_csv(INPUT_CD4)
 
 # Combined figure
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 7))
-plot_panel(pm, "B. Plasma Cell - Macrophage Axis", ax1, xlim_cap=15)
-plot_panel(cd4m, "C. CD4 T Cell - Macrophage Axis", ax2)
+plot_panel(pm, "Plasma Cell - Macrophage Axis", ax1, xlim_cap=15)
+plot_panel(cd4m, "CD4 T Cell - Macrophage Axis", ax2)
 fig.legend(handles=[Patch(facecolor=COLOR_R, label="Enriched in Responders"),
                     Patch(facecolor=COLOR_NR, label="Enriched in Non-Responders")],
            loc="lower center", ncol=2, fontsize=11, frameon=False, bbox_to_anchor=(0.5, -0.02))
 plt.tight_layout(rect=[0, 0.04, 1, 1])
-for fmt in ["pdf", "png", "svg"]:
+for fmt in ["pdf", "svg"]:
     fig.savefig(f"{OUTPUT}.{fmt}", dpi=300, bbox_inches="tight", facecolor="white")
 plt.close()

@@ -5,8 +5,9 @@ import anndata as ad
 import matplotlib.pyplot as plt
 import numpy as np
 
-INPUT = "CD138neg_immune_cells.h5ad"
-OUTPUT = "FigureS2B_macrophage_highlighted_UMAP"
+import sys; sys.path.insert(0, "."); from _common import FIG_DIR, H5AD_IMMUNE
+INPUT = str(H5AD_IMMUNE)
+OUTPUT = str(FIG_DIR / "SuppFigS2B")
 CELLTYPE_COL = "celltype_refined"
 
 EXCLUDE = ["Doublets", "Proliferating", "Hemoglobin", "ILC-like"]
@@ -46,6 +47,6 @@ ax.set_ylabel("UMAP 2", fontsize=13, fontweight="bold")
 ax.set_xticks([]); ax.set_yticks([])
 
 plt.tight_layout(pad=0.5)
-for fmt in ["pdf", "png", "svg"]:
+for fmt in ["pdf", "svg"]:
     fig.savefig(f"{OUTPUT}.{fmt}", dpi=300, bbox_inches="tight", facecolor="white")
 plt.close()

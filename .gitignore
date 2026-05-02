@@ -1,0 +1,18 @@
+__pycache__/
+*.pyc
+.DS_Store
+.Rhistory
+.ipynb_checkpoints/
+
+# Data is downloaded from Zenodo
+data/*.h5ad
+data/*.csv
+data/*.gmt
+data/*.tsv
+
+# Local artifacts
+outputs/
+logs/
+figures/*.pdf
+figures/*.svg
+figures/*.png

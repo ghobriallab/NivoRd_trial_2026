@@ -6,9 +6,10 @@ import matplotlib.patches as patches
 import numpy as np
 import pandas as pd
 
-EXPR_CSV = "gene_expression_summary.csv"
-VALID_CSV = "cytogenetic_validation.csv"
-OUTPUT = "FigureS2F_cytogenetic_heatmap_zscore"
+import sys; sys.path.insert(0, "."); from _common import FIG_DIR, DATA_LOCAL
+EXPR_CSV = str(DATA_LOCAL / "gene_expression_summary.csv")
+VALID_CSV = str(DATA_LOCAL / "cytogenetic_validation.csv")
+OUTPUT = str(FIG_DIR / "SuppFigS2F")
 
 GENE_ORDER = ["RB1", "WHSC1", "CKS1B", "MCL1", "ANP32E", "CCND1", "CDKN2C", "FAF1"]
 CASE_ORDER = ["Case #1", "Case #4", "Case #5", "Case #6", "Case #7"]
@@ -82,6 +83,6 @@ fig.text(0.5, 0.01,
          ha="center", va="bottom", fontsize=9, style="italic")
 
 plt.tight_layout(rect=[0, 0.04, 1, 1])
-for fmt in ["pdf", "png", "svg"]:
+for fmt in ["pdf", "svg"]:
     fig.savefig(f"{OUTPUT}.{fmt}", dpi=300, bbox_inches="tight", facecolor="white")
 plt.close()
