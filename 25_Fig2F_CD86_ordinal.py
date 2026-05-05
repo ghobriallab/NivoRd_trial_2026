@@ -52,7 +52,7 @@ print(f"  CD86 Δ vs DOR: rho={rho:+.3f}, p={p:.4f}", flush=True)
 fig, ax = plt.subplots(figsize=(3.8, 3.4))
 texts = []
 for _, r in delta.iterrows():
-    color = cm.COLORS["R_PostNivo"] if r["DOR_group"] == "R" else cm.COLORS["NR_PostNivo"]
+    color = cm.COLORS["DR_PostNivo"] if r["DOR_group"] == "DR" else cm.COLORS["P-NR_PostNivo"]
     ax.scatter(r["delta"], r["DOR_ordinal"],
                 s=110, alpha=0.9, edgecolor="black", linewidths=0.7,
                 facecolor=color, zorder=3)

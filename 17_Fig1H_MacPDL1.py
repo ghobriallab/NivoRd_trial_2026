@@ -1,4 +1,4 @@
-"""Fig 1H — PD-L1+ macrophages (% of macrophages) by R/NR × pre/post."""
+"""Fig 1H — PD-L1+ macrophages (% of macrophages) by DR/P-NR × pre/post."""
 from __future__ import annotations
 import matplotlib.pyplot as plt
 import matplotlib as mpl

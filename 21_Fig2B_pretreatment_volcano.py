@@ -2,8 +2,8 @@
 import _00_common as cm
 from _03_volcano_helper import make_volcano
 
-n_R, n_NR = make_volcano(
+n_DR, n_PNR = make_volcano(
     cm.OUT_DIR / "macrophage_pretreatment_DGE_LMM_DOR.csv",
     "Pre-treatment macrophages",
     "Fig2B")
-print(f"wrote Fig2B  {n_R + n_NR} DEGs (up_R={n_R}, up_NR={n_NR})")
+print(f"wrote Fig2B  {n_DR + n_PNR} DEGs (up_DR={n_DR}, up_PNR={n_PNR})")

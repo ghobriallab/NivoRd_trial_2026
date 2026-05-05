@@ -1,8 +1,8 @@
 """ANCOVA / mixed-effects test for the Fig 1I PD-L1 coordination panel.
 
-Q1 (interaction): does the Mac-PC PD-L1 slope differ between R and NR?
+Q1 (interaction): does the Mac-PC PD-L1 slope differ between DR and P-NR?
 Q2 (intercept):   after accounting for that slope, is Mac PD-L1
-                  systematically higher in NR at matched PC PD-L1?
+                  systematically higher in P-NR at matched PC PD-L1?
 
 Model: Mac_PDL1 ~ PC_PDL1 * Group + (1 | Patient)
 
@@ -10,7 +10,7 @@ Reports:
 - the interaction p (test of slope difference between groups)
 - the Group main effect p (intercept difference at matched PC_PDL1)
 - the LRT chi-square comparing full vs. additive models
-- both R-only and NR-only OLS slopes for sanity
+- both DR-only and P-NR-only OLS slopes for sanity
 """
 from __future__ import annotations
 import warnings
@@ -29,16 +29,16 @@ df = load_imc_extras()[
 ].dropna().copy()
 df["Group"] = df["Pt"].map(cm.DOR)
 df = df.dropna(subset=["Group"])
-df["Group_NR"] = (df["Group"] == "NR").astype(float)
+df["Group_PNR"] = (df["Group"] == "P-NR").astype(float)
 df["x_centered"] = df["pct_pdl1_in_PC"] - df["pct_pdl1_in_PC"].mean()
-df["x_times_NR"] = df["x_centered"] * df["Group_NR"]
+df["x_times_PNR"] = df["x_centered"] * df["Group_PNR"]
 
-print(f"n samples: {len(df)}  ({(df.Group=='R').sum()} R, {(df.Group=='NR').sum()} NR)")
+print(f"n samples: {len(df)}  ({(df.Group=='DR').sum()} DR, {(df.Group=='P-NR').sum()} P-NR)")
 print(f"n patients: {df.Pt.nunique()}")
 print()
 
 # 1) OLS within each group for sanity
-for g in ["R", "NR"]:
+for g in ["DR", "P-NR"]:
     sub = df[df.Group == g]
     rho, p_rho = stats.spearmanr(sub.pct_pdl1_in_PC, sub.pct_pdl1_in_macro)
     slope, intercept, r, p, se = stats.linregress(
@@ -50,9 +50,9 @@ print()
 
 # 2) Mixed-effects: full model (with interaction)
 endog = df["pct_pdl1_in_macro"].values
-exog_full = df[["x_centered", "Group_NR", "x_times_NR"]].copy()
+exog_full = df[["x_centered", "Group_PNR", "x_times_PNR"]].copy()
 exog_full.insert(0, "Intercept", 1.0)
-exog_add  = df[["x_centered", "Group_NR"]].copy()
+exog_add  = df[["x_centered", "Group_PNR"]].copy()
 exog_add.insert(0, "Intercept", 1.0)
 exog_null = df[["x_centered"]].copy()
 exog_null.insert(0, "Intercept", 1.0)
@@ -69,8 +69,8 @@ print(m_full.summary().tables[1])
 print()
 
 # Wald p-values from the full model
-p_int_wald   = m_full.pvalues["x_times_NR"]
-p_grp_wald   = m_full.pvalues["Group_NR"]
+p_int_wald   = m_full.pvalues["x_times_PNR"]
+p_grp_wald   = m_full.pvalues["Group_PNR"]
 print(f"Wald p (interaction PC_PDL1 x Group):       {p_int_wald:.4f}")
 print(f"Wald p (Group main effect at mean PC_PDL1): {p_grp_wald:.4f}")
 print()
@@ -88,6 +88,6 @@ print()
 # 3) Effect size on the Group main effect from the additive model
 print("=== Additive (no-interaction) model: ===")
 print(m_add.summary().tables[1])
-beta_grp = m_add.fe_params["Group_NR"]
-print(f"\nNR macrophages have {beta_grp:+.2f} %-points more PD-L1+ "
+beta_grp = m_add.fe_params["Group_PNR"]
+print(f"\nP-NR macrophages have {beta_grp:+.2f} %-points more PD-L1+ "
       f"at matched PC PD-L1 (additive model).")

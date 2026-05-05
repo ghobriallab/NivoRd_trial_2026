@@ -7,7 +7,7 @@ Sub-panels (left to right):
   (iv)  Myeloid cells
 
 CD8+ abundance is in main Figure 1B; macrophage abundance is in main 1C.
-All four shown as % of classified cells, paired R/NR x pre/post boxplots
+All four shown as % of classified cells, paired DR/P-NR x pre/post boxplots
 with patient-level lines, Cohen's d + p brackets (bold if p<0.05).
 """
 from __future__ import annotations

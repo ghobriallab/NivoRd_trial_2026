@@ -1,15 +1,21 @@
 """Shared helpers for the manuscript_v4_DOR figure pipeline.
 
 DOR = IMWG depth of response. Primary classifier for this manuscript:
-  R   = patients with VGPR or CR best response (n=4)
-  NR  = patients with PR or SD best response (n=4)
+  DR    = deep responders, VGPR or CR best response (n=4)
+  P-NR  = partial / non-responders, PR or SD best response (n=4)
+
+Per IMWG criteria, PR is a recognized response; the binary contrast in
+this manuscript reflects depth of response (>=VGPR vs <VGPR), not
+presence vs absence of response. Code-side identifiers use the
+hyphenated `P-NR`; prose / figure legends render this as `P/NR`.
 
 Ordinal scale (SD=1, PR=2, VGPR=3, CR=4) is the additional analytic frame
 used for one pre-planned Spearman test per axis.
 
 For sensitivity / robustness reporting only, COT (manuscript's published
 change-of-treatment-within-24-mo rule) and FAST (biochemical PD within
-12 mo) are also defined.
+12 mo) are also defined; their group labels follow the same DR / P-NR
+convention to keep downstream code uniform.
 """
 from __future__ import annotations
 from pathlib import Path
@@ -49,17 +55,17 @@ GMT_PATH       = DATA_LOCAL / "MSigDB_Hallmark_2020.gmt"
 # ---------------------------------------------------------------------------
 # Classifiers
 # ---------------------------------------------------------------------------
-DOR = {  # primary classifier for this manuscript: VGPR/CR -> R; SD/PR -> NR
-    "Pt05": "R", "Pt06": "R", "Pt07": "R", "Pt09": "R",
-    "Pt01": "NR", "Pt03": "NR", "Pt04": "NR", "Pt08": "NR",
+DOR = {  # primary classifier for this manuscript: VGPR/CR -> DR; SD/PR -> P-NR
+    "Pt05": "DR", "Pt06": "DR", "Pt07": "DR", "Pt09": "DR",
+    "Pt01": "P-NR", "Pt03": "P-NR", "Pt04": "P-NR", "Pt08": "P-NR",
 }
 COT = {  # change-of-treatment within 24 mo (published, kept for robustness only)
-    "Pt05": "R", "Pt06": "R", "Pt07": "R", "Pt08": "R", "Pt09": "R",
-    "Pt01": "NR", "Pt03": "NR", "Pt04": "NR",
+    "Pt05": "DR", "Pt06": "DR", "Pt07": "DR", "Pt08": "DR", "Pt09": "DR",
+    "Pt01": "P-NR", "Pt03": "P-NR", "Pt04": "P-NR",
 }
 FAST = {  # biochemical PD within 12 mo (alternative classifier)
-    "Pt06": "R", "Pt07": "R", "Pt08": "R", "Pt09": "R",
-    "Pt01": "NR", "Pt03": "NR", "Pt04": "NR", "Pt05": "NR",
+    "Pt06": "DR", "Pt07": "DR", "Pt08": "DR", "Pt09": "DR",
+    "Pt01": "P-NR", "Pt03": "P-NR", "Pt04": "P-NR", "Pt05": "P-NR",
 }
 
 ORDINAL_RESPONSE = {"SD": 1, "PR": 2, "VGPR": 3, "CR": 4}
@@ -107,14 +113,14 @@ SCRNA_COHORT = ["Pt01", "Pt04", "Pt05", "Pt06", "Pt07"]
 # Visual styling — DOR-keyed palette (matches published 4-color scheme)
 # ---------------------------------------------------------------------------
 COLORS = {
-    "R_Baseline":  "#ADD8E6",   # lightblue
-    "R_PostNivo":  "#1E90FF",   # dodgerblue
-    "NR_Baseline": "#FFB6C1",   # light coral
-    "NR_PostNivo": "#B22222",   # firebrick
+    "DR_Baseline":   "#ADD8E6",   # lightblue
+    "DR_PostNivo":   "#1E90FF",   # dodgerblue
+    "P-NR_Baseline": "#FFB6C1",   # light coral
+    "P-NR_PostNivo": "#B22222",   # firebrick
 }
-GROUP_ORDER = ["R_Baseline", "R_PostNivo", "NR_Baseline", "NR_PostNivo"]
-LEGEND_LABELS = {"R_Baseline": "R, pre", "R_PostNivo": "R, post",
-                 "NR_Baseline": "NR, pre", "NR_PostNivo": "NR, post"}
+GROUP_ORDER = ["DR_Baseline", "DR_PostNivo", "P-NR_Baseline", "P-NR_PostNivo"]
+LEGEND_LABELS = {"DR_Baseline":   "DR, pre",   "DR_PostNivo":   "DR, post",
+                 "P-NR_Baseline": "P/NR, pre", "P-NR_PostNivo": "P/NR, post"}
 
 DOR_COLOR_BY_RANK = {1: "#7f7f7f", 2: "#f1c40f", 3: "#3498db", 4: "#27ae60"}
 

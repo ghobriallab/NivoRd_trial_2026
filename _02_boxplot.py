@@ -1,7 +1,7 @@
 """Box-plot helper used by Fig 1B/1D/1F/Supp boxplots.
 
 Layout per panel (matches original IMC_figures.Rmd aesthetic):
-  4 boxes left->right: R-pre, R-post, NR-pre, NR-post.
+  4 boxes left->right: DR-pre, DR-post, P-NR-pre, P-NR-post.
   Patient-paired connector lines for pre->post within each group.
   Brackets with stars for default comparisons (paired t for same-group
   pre vs post; Welch t for between-group).
@@ -41,10 +41,10 @@ def boxplot_panel(ax, df, value_col, ylabel, title=None,
                   ymin=None, ymax=None):
     classifier = classifier if classifier is not None else DOR
     comparisons = comparisons or [
-        ("R_Baseline", "R_PostNivo"),
-        ("R_PostNivo", "NR_PostNivo"),
-        ("NR_Baseline", "NR_PostNivo"),
-        ("R_Baseline", "NR_Baseline"),
+        ("DR_Baseline", "DR_PostNivo"),
+        ("DR_PostNivo", "P-NR_PostNivo"),
+        ("P-NR_Baseline", "P-NR_PostNivo"),
+        ("DR_Baseline", "P-NR_Baseline"),
     ]
     df = df.copy()
     df["Group"] = df["Pt"].map(classifier)
@@ -72,7 +72,7 @@ def boxplot_panel(ax, df, value_col, ylabel, title=None,
             ax.scatter(positions[row["x"]], row[value_col],
                        c="black", s=18, zorder=3,
                        edgecolors="white", linewidths=0.4)
-        for grp in ("R", "NR"):
+        for grp in ("DR", "P-NR"):
             pair = sub[sub["Group"] == grp]
             if len(pair) == 2:
                 pre = pair[pair["Tp"] == "Baseline"][value_col]

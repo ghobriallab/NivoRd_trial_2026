@@ -16,7 +16,7 @@ the broader Immune_cell_2 == "CD163+ Macrophages" set is 96%
 classical-monocyte by transcriptional signature (CD14+/S100A8/9+/VCAN+
 /FCN1+/CXCL8+), whereas the refined annotation captures the canonical
 FCGR3A+/MS4A7+/C1Q+ macrophage population. Post-treatment effective
-cohort under this def is Pt04 (NR), Pt05 (R), Pt06 (R) after the
+cohort under this def is Pt04 (P-NR), Pt05 (DR), Pt06 (DR) after the
 >=5 cells/patient filter; pre-treatment is Pt01, Pt03, Pt04, Pt06, Pt07.
 
 Outputs:
@@ -24,7 +24,7 @@ Outputs:
   outputs/macrophage_pretreatment_DGE_LMM_DOR.csv
   outputs/dge_summary.txt          (counts at FDR<0.05 / |LFC|>0.5)
 
-scRNA cohort under DOR: R = {Pt05, Pt06, Pt07}; NR = {Pt01, Pt04}.
+scRNA cohort under DOR: DR = {Pt05, Pt06, Pt07}; P-NR = {Pt01, Pt04}.
 (Identical to COT in the scRNA cohort because Pt08 is excluded for QC.)
 """
 from __future__ import annotations
@@ -69,14 +69,14 @@ def fit_gene(gene, expr, group, patient):
 def run_one(adata, tp_label, out_csv, summary_lines):
     a = adata[(adata.obs[CELLTYPE_COL].astype(str) == CELLTYPE)
               & (adata.obs["Tp"] == tp_label)].copy()
-    a = a[a.obs["DOR_group"].isin(["R", "NR"])].copy()
+    a = a[a.obs["DOR_group"].isin(["DR", "P-NR"])].copy()
     counts = a.obs.groupby("Pt").size()
     keep = counts[counts >= MIN_CELLS_PER_PATIENT].index
     a = a[a.obs["Pt"].isin(keep)].copy()
     pts = sorted(a.obs["Pt"].unique().tolist())
     grp_counts = a.obs.groupby("DOR_group").size().to_dict()
     line = (f"  [{tp_label}] cells={a.n_obs}, patients={pts}, "
-            f"R={grp_counts.get('R',0)}, NR={grp_counts.get('NR',0)}")
+            f"DR={grp_counts.get('DR',0)}, P-NR={grp_counts.get('P-NR',0)}")
     print(line, flush=True)
     summary_lines.append(line)
 
@@ -87,12 +87,13 @@ def run_one(adata, tp_label, out_csv, summary_lines):
 
     X = a.X.toarray() if issparse(a.X) else np.asarray(a.X)
     X = np.asarray(X, dtype=np.float64)
-    group = (a.obs["DOR_group"] == "NR").astype(float).values
+    # Group_PNR = 1 for P-NR, 0 for DR; positive coef => higher in P-NR
+    group = (a.obs["DOR_group"] == "P-NR").astype(float).values
     patient = a.obs["Pt"].values
     var = np.array(a.var_names)
 
     keep_genes = np.zeros(X.shape[1], dtype=bool)
-    for g_label in ["R", "NR"]:
+    for g_label in ["DR", "P-NR"]:
         m = a.obs["DOR_group"].values == g_label
         keep_genes |= ((X[m] > 0).mean(axis=0) >= MIN_PCT)
     genes = [g for g in var[keep_genes]
@@ -117,11 +118,11 @@ def run_one(adata, tp_label, out_csv, summary_lines):
 
     sig_all = df[(df.padj < 0.05) & (df.log2FoldChange.abs() > 0.5)]
     sig = sig_all[sig_all["converged"].astype(bool)]
-    n_up_NR = int((sig.log2FoldChange > 0).sum())
-    n_up_R = int((sig.log2FoldChange < 0).sum())
+    n_up_PNR = int((sig.log2FoldChange > 0).sum())
+    n_up_DR = int((sig.log2FoldChange < 0).sum())
     n_excluded = len(sig_all) - len(sig)
     line = (f"  -> {len(sig)} sig (FDR<0.05, |LFC|>0.5, converged): "
-            f"up_R={n_up_R}, up_NR={n_up_NR} "
+            f"up_DR={n_up_DR}, up_PNR={n_up_PNR} "
             f"({n_excluded} non-converged dropped); CSV: {out_csv.name}")
     print(line, flush=True); summary_lines.append(line)
     return df
@@ -137,8 +138,8 @@ def main():
                       f"Min cells/pt: {MIN_CELLS_PER_PATIENT}; "
                       f"min %expr: {MIN_PCT*100:.0f}%; "
                       f"BH-FDR; thresholds: FDR<0.05, |log2FC|>0.5",
-                      f"Cohort under DOR: R={[p for p,v in cm.DOR.items() if v=='R' and p in cm.SCRNA_COHORT]}, "
-                      f"NR={[p for p,v in cm.DOR.items() if v=='NR' and p in cm.SCRNA_COHORT]}",
+                      f"Cohort under DOR: DR={[p for p,v in cm.DOR.items() if v=='DR' and p in cm.SCRNA_COHORT]}, "
+                      f"P-NR={[p for p,v in cm.DOR.items() if v=='P-NR' and p in cm.SCRNA_COHORT]}",
                       ""]
 
     print()

@@ -1,12 +1,12 @@
 """Fig 1I — Mac PD-L1+ vs PC PD-L1+ scatter (coordinated PD-L1 program).
 
 PC PD-L1 on x-axis (the upstream environmental signal), Mac PD-L1 on
-y-axis (the downstream amplification). R-only and NR-only OLS lines
+y-axis (the downstream amplification). DR-only and P-NR-only OLS lines
 plus an overall reference line. All significance tests sit in a side
 panel to the right of the axes (no overlap with regression lines).
 
 Reports:
-  - within-group Spearman ρ and OLS slope for R and NR
+  - within-group Spearman ρ and OLS slope for DR and P-NR
   - LMM ANCOVA test of slope difference between groups
     (Mac PD-L1 ~ PC PD-L1 × Group + (1|Patient); LRT vs additive)
 """
@@ -33,7 +33,7 @@ df = df.dropna(subset=["pct_pdl1_in_macro", "pct_pdl1_in_PC", "DOR_group"])
 # ---- linear mixed-effects ANCOVA: Mac ~ PC * Group + (1|Patient) ----
 sub = df.copy()
 sub["x"]  = sub["pct_pdl1_in_PC"] - sub["pct_pdl1_in_PC"].mean()
-sub["g"]  = (sub["DOR_group"] == "NR").astype(float)
+sub["g"]  = (sub["DOR_group"] == "P-NR").astype(float)
 sub["xg"] = sub["x"] * sub["g"]
 
 def fit(exog_cols):
@@ -48,7 +48,7 @@ p_int = 1 - stats.chi2.cdf(chi2_int, df=1)
 
 # ---- group-specific stats for the side panel ----
 strat = {}
-for grp in ("R", "NR"):
+for grp in ("DR", "P-NR"):
     s = df[df["DOR_group"] == grp]
     xg = s["pct_pdl1_in_PC"].values
     yg = s["pct_pdl1_in_macro"].values
@@ -60,7 +60,7 @@ for grp in ("R", "NR"):
 fig = plt.figure(figsize=(8.4, 3.4))
 ax = fig.add_axes([0.08, 0.16, 0.42, 0.78])  # [left, bottom, w, h]
 
-# scatter by R/NR × pre/post
+# scatter by DR/P-NR × pre/post
 for bk in cm.GROUP_ORDER:
     s = df[df["bucket"] == bk]
     ax.scatter(s["pct_pdl1_in_PC"], s["pct_pdl1_in_macro"],
@@ -74,8 +74,8 @@ ax.plot(xs_all, slope_all * xs_all + b_all,
          c="black", lw=1.0, ls="--", alpha=0.45, zorder=2)
 
 # group lines
-for grp, color in (("R",  cm.COLORS["R_PostNivo"]),
-                    ("NR", cm.COLORS["NR_PostNivo"])):
+for grp, color in (("DR",   cm.COLORS["DR_PostNivo"]),
+                    ("P-NR", cm.COLORS["P-NR_PostNivo"])):
     s = df[df["DOR_group"] == grp]
     xg = s["pct_pdl1_in_PC"].values
     yg = s["pct_pdl1_in_macro"].values
@@ -105,29 +105,29 @@ def fmt_p(p):
         text = f"p={p:.2f}"
     return text, ("bold" if bold else "normal")
 
-COL_R  = cm.COLORS["R_PostNivo"]
-COL_NR = cm.COLORS["NR_PostNivo"]
+COL_DR  = cm.COLORS["DR_PostNivo"]
+COL_PNR = cm.COLORS["P-NR_PostNivo"]
 
-# R line
-rho_R, p_R, slope_R = strat["R"]
-p_text_R, w_R = fmt_p(p_R)
+# DR line
+rho_DR, p_DR, slope_DR = strat["DR"]
+p_text_DR, w_DR = fmt_p(p_DR)
 ax_stats.text(0, 0.85,
-               rf"$\bf{{R:}}$  $\rho={rho_R:+.2f}$,  $\bf{{slope={slope_R:+.2f}}}$,  {p_text_R}",
-               transform=ax_stats.transAxes, fontsize=10, color=COL_R,
-               va="center", ha="left", fontweight=w_R)
+               rf"$\bf{{DR:}}$  $\rho={rho_DR:+.2f}$,  $\bf{{slope={slope_DR:+.2f}}}$,  {p_text_DR}",
+               transform=ax_stats.transAxes, fontsize=10, color=COL_DR,
+               va="center", ha="left", fontweight=w_DR)
 
-# NR line
-rho_N, p_N, slope_N = strat["NR"]
+# P-NR line
+rho_N, p_N, slope_N = strat["P-NR"]
 p_text_N, w_N = fmt_p(p_N)
 ax_stats.text(0, 0.65,
-               rf"$\bf{{NR:}}$  $\rho={rho_N:+.2f}$,  $\bf{{slope={slope_N:+.2f}}}$,  {p_text_N}",
-               transform=ax_stats.transAxes, fontsize=10, color=COL_NR,
+               rf"$\bf{{P/NR:}}$  $\rho={rho_N:+.2f}$,  $\bf{{slope={slope_N:+.2f}}}$,  {p_text_N}",
+               transform=ax_stats.transAxes, fontsize=10, color=COL_PNR,
                va="center", ha="left", fontweight=w_N)
 
 # Interaction (slope-difference) line
 p_text_int, w_int = fmt_p(p_int)
 ax_stats.text(0, 0.40,
-               rf"$\bf{{R/NR\ interaction\ (slope\ difference):}}$",
+               rf"$\bf{{DR/P/NR\ interaction\ (slope\ difference):}}$",
                transform=ax_stats.transAxes, fontsize=10, color="black",
                va="center", ha="left")
 ax_stats.text(0, 0.25,
@@ -141,6 +141,6 @@ ax_stats.text(0, 0.05, "(slope = Δ Mac PD-L1+ % per +1 unit PC PD-L1+ %)",
 
 cm.save_fig(fig, "Fig1I")
 plt.close(fig)
-print(f"wrote Fig1I  R: ρ={strat['R'][0]:+.3f}, slope={strat['R'][2]:+.3f}, p={strat['R'][1]:.4f}; "
-      f"NR: ρ={strat['NR'][0]:+.3f}, slope={strat['NR'][2]:+.3f}, p={strat['NR'][1]:.4f}; "
+print(f"wrote Fig1I  DR: ρ={strat['DR'][0]:+.3f}, slope={strat['DR'][2]:+.3f}, p={strat['DR'][1]:.4f}; "
+      f"P-NR: ρ={strat['P-NR'][0]:+.3f}, slope={strat['P-NR'][2]:+.3f}, p={strat['P-NR'][1]:.4f}; "
       f"interaction χ²={chi2_int:.2f}, p={p_int:.2e}")

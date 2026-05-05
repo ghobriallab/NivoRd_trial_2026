@@ -15,7 +15,7 @@ mpl.rcParams.update({"font.family": "Arial", "font.size": 9,
                       "pdf.fonttype": 42, "svg.fonttype": "none"})
 
 GMT = str(cm.GMT_PATH)
-COLOR_NR, COLOR_R = "#e74c3c", "#2980b9"
+COLOR_PNR, COLOR_DR = "#e74c3c", "#2980b9"
 
 
 def run_gsea(csv_path):
@@ -41,7 +41,7 @@ def make_gsea_panel(csv_path, save_csv_path, title, save_tag, n_top=10):
     sig["label"] = sig["Term"].str.replace("_", " ").str.title().str[:36]
 
     fig, ax = plt.subplots(figsize=(5.6, 4.6))
-    colors = [COLOR_R if n < 0 else COLOR_NR for n in sig["NES"]]
+    colors = [COLOR_DR if n < 0 else COLOR_PNR for n in sig["NES"]]
     ax.barh(range(len(sig)), sig["NES"].values, color=colors,
              edgecolor="none", height=0.7)
     ax.set_yticks(range(len(sig)))
@@ -62,8 +62,8 @@ def make_gsea_panel(csv_path, save_csv_path, title, save_tag, n_top=10):
                       va="center", ha="left" if nes > 0 else "right",
                       fontsize=9, color="#555555")
     ax.set_title(title, fontsize=11, fontweight="bold", pad=18)
-    ax.legend(handles=[Patch(facecolor=COLOR_R, label="Enriched in R"),
-                        Patch(facecolor=COLOR_NR, label="Enriched in NR")],
+    ax.legend(handles=[Patch(facecolor=COLOR_DR, label="Enriched in DR"),
+                        Patch(facecolor=COLOR_PNR, label="Enriched in P/NR")],
                loc="lower center", bbox_to_anchor=(0.5, 1.0), fontsize=9,
                frameon=False, ncol=2, handletextpad=0.4, columnspacing=1.5)
     plt.tight_layout()

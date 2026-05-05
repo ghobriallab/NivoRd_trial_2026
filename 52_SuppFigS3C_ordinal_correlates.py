@@ -59,8 +59,8 @@ def draw_scatter(ax, df, xlabel):
     rho, p, _ = cm.spearman(df["x"], df["DOR_ordinal"])
     texts = []
     for _, r in df.iterrows():
-        color = (cm.COLORS["R_PostNivo"] if r["DOR_group"] == "R"
-                 else cm.COLORS["NR_PostNivo"])
+        color = (cm.COLORS["DR_PostNivo"] if r["DOR_group"] == "DR"
+                 else cm.COLORS["P-NR_PostNivo"])
         ax.scatter(r["x"], r["DOR_ordinal"],
                     s=100, alpha=0.9, edgecolor="black", linewidths=0.7,
                     facecolor=color, zorder=3)

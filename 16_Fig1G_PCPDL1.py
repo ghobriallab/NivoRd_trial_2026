@@ -1,4 +1,4 @@
-"""Fig 1G — PD-L1+ plasma cells (% of plasma cells) by R/NR × pre/post.
+"""Fig 1G — PD-L1+ plasma cells (% of plasma cells) by DR/P-NR × pre/post.
 The null result: tumor-intrinsic PD-L1 is not the discriminator."""
 from __future__ import annotations
 import matplotlib.pyplot as plt
