@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
-"""Supplementary Figure S4A-B: Ligand-receptor interaction analysis.
+"""Supplementary Figure S5A-B: Ligand-receptor interaction analysis (exploratory).
 (A) Plasma cell-macrophage axis  (B) CD4 T cell-macrophage axis
+
+LIANA differential interactions (Cohen's d, DR vs P/NR). Reported as
+exploratory in the manuscript Discussion.
 """
 
 import matplotlib.pyplot as plt
@@ -11,7 +14,7 @@ import pandas as pd
 import sys; sys.path.insert(0, "."); from _00_common import FIG_DIR, DATA_LOCAL
 INPUT_PM = str(DATA_LOCAL / "differential_plasma_macrophage_pretreatment.csv")
 INPUT_CD4 = str(DATA_LOCAL / "differential_cd4_macrophage_pretreatment.csv")
-OUTPUT = str(FIG_DIR / "SuppFigS4")
+OUTPUT = str(FIG_DIR / "SuppFigS5")
 
 COLOR_DR, COLOR_PNR = "#2980b9", "#e74c3c"
 

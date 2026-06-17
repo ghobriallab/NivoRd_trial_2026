@@ -80,7 +80,10 @@ files; the full deposit is ~230 MB.
 | S3A      | `50_SuppFigS3A_lineage_abundances.py`  | Lineage abundance summary                 |
 | S3B      | `51_SuppFigS3B_CN_abundances.py`       | CN abundance summary                      |
 | S3C      | `52_SuppFigS3C_ordinal_correlates.py`  | DOR_ordinal correlations                   |
-| S4A/B    | `60_SuppFigS4_cell_interactions.py`    | LIANA differential interactions           |
+| S4A      | `60_SuppFigS4A_M1_module.py`           | M1 macrophage module score                |
+| S4B      | `61_SuppFigS4B_M2_module.py`           | M2 macrophage module score                |
+| S4C      | `62_SuppFigS4C_CD8_markers.py`         | CD8 activation/exhaustion dot plot        |
+| S5A/B    | `70_SuppFigS5_cell_interactions.py`    | LIANA differential interactions (exploratory) |
 
 ### Helper / analysis scripts
 
