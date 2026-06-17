@@ -1,7 +1,9 @@
 """Fig 1E — paired Δlog(Mac/CD4) post − pre vs ordinal DOR.
 
-Single pre-planned ordinal Spearman test for the IMC lineage axis.
-n=7 patients with paired baseline+post-tx IMC (Pt03 baseline missing).
+Purpose:      Render Figure 1E: Mac/CD4 ratio change post-pre vs DOR_ordinal (Spearman).
+Inputs:       imc_extras_persample.csv; DOR_ORDINAL dict in _00_common.
+Outputs:      figures/Fig1E.pdf / .svg.
+Dependencies: matplotlib, scipy.stats, _00_common, _01_data_loaders.
 """
 from __future__ import annotations
 import numpy as np

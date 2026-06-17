@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Supplementary Figure S2A: Immune cell type marker expression heatmap."""
+"""Supplementary Figure S2A: Immune cell type marker expression heatmap.
+
+Purpose:      Render Supp Fig S2A: canonical marker expression heatmap across 12 immune phenotypes.
+Inputs:       CD138neg_immune_cells.h5ad.
+Outputs:      figures/SuppFigS2A.pdf / .svg.
+Dependencies: scanpy, matplotlib, _00_common, _01_data_loaders.
+"""
 
 import anndata as ad
 import matplotlib.pyplot as plt

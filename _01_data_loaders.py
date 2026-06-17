@@ -1,8 +1,9 @@
 """Data loaders for the manuscript_v4_DOR pipeline.
 
-All h5ad reads come from `1-Datasets/` (read-only Dropbox dir). All CSV
-inputs are local copies in `data/` for portability. No mutation of source
-data; output goes to `outputs/` only.
+Purpose:      Canonical loaders for IMC h5ad, scRNA-seq immune/tumor h5ads, IMC extras CSV.
+Inputs:       h5ads + CSVs under DATA_LOCAL (resolved via NIVO_DATA_DIR or _00_common defaults).
+Outputs:      None (returns AnnData / pandas objects).
+Dependencies: anndata, pandas, _00_common.
 """
 from __future__ import annotations
 import warnings

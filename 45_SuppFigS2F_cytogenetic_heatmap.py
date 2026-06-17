@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Supplementary Figure S2F: Cytogenetic gene expression validation heatmap."""
+"""Supplementary Figure S2F: Cytogenetic gene expression validation heatmap.
+
+Purpose:      Render Supp Fig S2F: cytogenetic-vs-expression validation heatmap.
+Inputs:       gene_expression_summary.csv + cytogenetic_validation.csv.
+Outputs:      figures/SuppFigS2F.pdf / .svg.
+Dependencies: matplotlib, pandas, _00_common.
+"""
 
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches

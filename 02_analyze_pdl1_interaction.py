@@ -1,16 +1,9 @@
 """ANCOVA / mixed-effects test for the Fig 1I PD-L1 coordination panel.
 
-Q1 (interaction): does the Mac-PC PD-L1 slope differ between DR and P-NR?
-Q2 (intercept):   after accounting for that slope, is Mac PD-L1
-                  systematically higher in P-NR at matched PC PD-L1?
-
-Model: Mac_PDL1 ~ PC_PDL1 * Group + (1 | Patient)
-
-Reports:
-- the interaction p (test of slope difference between groups)
-- the Group main effect p (intercept difference at matched PC_PDL1)
-- the LRT chi-square comparing full vs. additive models
-- both DR-only and P-NR-only OLS slopes for sanity
+Purpose:      LMM ANCOVA for Mac PD-L1 vs PC PD-L1 x Group on the IMC cohort.
+Inputs:       imc_extras_persample.csv (NivoRd cohort).
+Outputs:      Console summary + LRT chi-square / p-values used by Figure 1I.
+Dependencies: statsmodels MixedLM, pandas, _00_common.
 """
 from __future__ import annotations
 import warnings

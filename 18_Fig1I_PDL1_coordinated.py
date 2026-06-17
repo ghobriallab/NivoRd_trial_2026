@@ -1,14 +1,9 @@
 """Fig 1I — Mac PD-L1+ vs PC PD-L1+ scatter (coordinated PD-L1 program).
 
-PC PD-L1 on x-axis (the upstream environmental signal), Mac PD-L1 on
-y-axis (the downstream amplification). DR-only and P-NR-only OLS lines
-plus an overall reference line. All significance tests sit in a side
-panel to the right of the axes (no overlap with regression lines).
-
-Reports:
-  - within-group Spearman ρ and OLS slope for DR and P-NR
-  - LMM ANCOVA test of slope difference between groups
-    (Mac PD-L1 ~ PC PD-L1 × Group + (1|Patient); LRT vs additive)
+Purpose:      Render Figure 1I: Mac PD-L1 vs PC PD-L1 scatter; LMM ANCOVA group interaction.
+Inputs:       imc_extras_persample.csv.
+Outputs:      figures/Fig1I.pdf / .svg + console LMM stats.
+Dependencies: matplotlib, statsmodels MixedLM, _00_common, _01_data_loaders.
 """
 from __future__ import annotations
 import warnings

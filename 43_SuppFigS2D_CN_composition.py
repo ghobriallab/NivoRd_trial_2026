@@ -1,15 +1,9 @@
 """Supp Fig S2D — CN composition stacked bar.
 
-Regenerated from pheno_8clus-cn_centers.csv so the labeling matches the
-main text and Supp S3 panels (which describe CN4 = 77% PC,
-CN7 = 71% Mac, CN2 = PC-Mac contact zone).
-
-The published version of this panel was built from an earlier k-means
-run that produced different CN numbering (in that run CN2 was Mac-rich
-and CN3 was PC-rich). Manuscript v4 uses the rerun CN labeling
-throughout, so this panel is regenerated to match.
-
-Output: figures/SuppFigS2D.{pdf,svg}
+Purpose:      Render Supp Fig S2D: lineage composition of each cellular neighborhood (CN0-CN7).
+Inputs:       pheno_8clus-cn_centers.csv.
+Outputs:      figures/SuppFigS2D.pdf / .svg.
+Dependencies: matplotlib, pandas, _00_common, _01_data_loaders.
 """
 from __future__ import annotations
 from pathlib import Path

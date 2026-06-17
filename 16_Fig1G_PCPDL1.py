@@ -1,5 +1,10 @@
 """Fig 1G — PD-L1+ plasma cells (% of plasma cells) by DR/P-NR × pre/post.
-The null result: tumor-intrinsic PD-L1 is not the discriminator."""
+
+Purpose:      Render Figure 1G: Plasma-cell PD-L1+ % DR vs P-NR x pre/post.
+Inputs:       imc_extras_persample.csv.
+Outputs:      figures/Fig1G.pdf / .svg.
+Dependencies: matplotlib, _00_common, _01_data_loaders, _02_boxplot.
+"""
 from __future__ import annotations
 import matplotlib.pyplot as plt
 import matplotlib as mpl

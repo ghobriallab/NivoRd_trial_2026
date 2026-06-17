@@ -1,0 +1,110 @@
+name: Run Reproducibility Check
+
+on:
+  schedule:
+    # Runs every Saturday at 08:00 UTC
+    - cron: "0 8 * * 6"
+  workflow_dispatch: {}
+
+jobs:
+  reproducibility-check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Verify tools are present
+        run: |
+          if [ ! -f "tools/check_reproducibility.py" ]; then
+            echo "ERROR: tools/check_reproducibility.py not found."
+            exit 1
+          fi
+
+      - name: Run reproducibility check
+        run: |
+          set +e
+          python3 tools/check_reproducibility.py . --json 2>&1
+          CHECK_EXIT=$?
+          set -e
+          if [ $CHECK_EXIT -eq 2 ]; then
+            echo "ERROR: check_reproducibility.py reported a bad path."
+            exit 1
+          fi
+          if [ ! -f "reproducibility_score.json" ]; then
+            echo "ERROR: reproducibility_score.json was not created."
+            exit 1
+          fi
+
+      - name: Update reproducibility.md
+        run: |
+          RUN_DATE=$(date -u +%Y-%m-%d)
+          RUN_TS=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          REPO="${{ github.repository }}"
+          RUN_ID="${{ github.run_id }}"
+
+          SCORE=$(python3 -c "import json; d=json.load(open('reproducibility_score.json')); print(d['score'])")
+
+          CATEGORIES=$(python3 -c "
+          import json
+          d = json.load(open('reproducibility_score.json'))
+          for key, val in d['categories'].items():
+              label = key.replace('_', ' ').title()
+              print(f'| {label} | {val[\"score\"]}/{val[\"max\"]} |')
+          ")
+
+          TOP_ISSUES=$(python3 -c "
+          import json
+          d = json.load(open('reproducibility_score.json'))
+          issues = []
+          for key, val in d['categories'].items():
+              for issue in val.get('issues', []):
+                  label = key.replace('_', ' ').title()
+                  issues.append(f'- [{label}] {issue}')
+          result = issues[:5] if issues else ['- None']
+          print('\n'.join(result))
+          ")
+
+          if [ "$SCORE" -ge 80 ]; then
+            TIER="Good"
+          elif [ "$SCORE" -ge 60 ]; then
+            TIER="Needs Improvement"
+          else
+            TIER="Critical"
+          fi
+
+          NEW_ENTRY="## ${RUN_DATE} — Score: ${SCORE}/100 (${TIER})
+
+          | Category | Score |
+          |----------|-------|
+          ${CATEGORIES}
+
+          **Top issues:**
+          ${TOP_ISSUES}
+
+          _Run at ${RUN_TS} by [run-reproducibility-check](https://github.com/${REPO}/actions/runs/${RUN_ID})_"
+
+          if [ -f "reproducibility.md" ]; then
+            EXISTING_BODY=$(tail -n +2 reproducibility.md)
+            printf '# Reproducibility History\n\n%s\n\n---\n\n%s\n' "$NEW_ENTRY" "$EXISTING_BODY" > reproducibility.md
+          else
+            printf '# Reproducibility History\n\n%s\n' "$NEW_ENTRY" > reproducibility.md
+          fi
+
+      - name: Commit and push reproducibility.md
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          RUN_DATE=$(date -u +%Y-%m-%d)
+          SCORE=$(python3 -c "import json; d=json.load(open('reproducibility_score.json')); print(d['score'])")
+
+          git add reproducibility.md
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore: reproducibility check ${RUN_DATE} — ${SCORE}/100"
+            git push
+          fi

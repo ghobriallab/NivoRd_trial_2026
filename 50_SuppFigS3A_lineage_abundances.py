@@ -1,14 +1,9 @@
 """Supp Fig S3A — IMC lineage abundances (mega-panel, 4 sub-panels).
 
-Sub-panels (left to right):
-  (i)   CD4+ T cells
-  (ii)  Plasma cells
-  (iii) B cells
-  (iv)  Myeloid cells
-
-CD8+ abundance is in main Figure 1B; macrophage abundance is in main 1C.
-All four shown as % of classified cells, paired DR/P-NR x pre/post boxplots
-with patient-level lines, Cohen's d + p brackets (bold if p<0.05).
+Purpose:      Render Supp Fig S3A: IMC lineage abundance mega-panel (CD4, PC, B, Myeloid).
+Inputs:       imc_extras_persample.csv.
+Outputs:      figures/SuppFigS3A.pdf / .svg.
+Dependencies: matplotlib, _00_common, _01_data_loaders, _02_boxplot.
 """
 from __future__ import annotations
 import matplotlib.pyplot as plt

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Supplementary Figure S5A-B: Ligand-receptor interaction analysis (exploratory).
-(A) Plasma cell-macrophage axis  (B) CD4 T cell-macrophage axis
 
-LIANA differential interactions (Cohen's d, DR vs P/NR). Reported as
-exploratory in the manuscript Discussion.
+Purpose:      Render Supp Fig S5A-B: LIANA differential ligand-receptor interactions (exploratory).
+Inputs:       differential_plasma_macrophage_pretreatment.csv + differential_cd4_macrophage_pretreatment.csv.
+Outputs:      figures/SuppFigS5.pdf / .svg.
+Dependencies: matplotlib, pandas, numpy, _00_common.
 """
 
 import matplotlib.pyplot as plt

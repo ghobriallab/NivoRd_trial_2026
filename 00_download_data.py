@@ -1,20 +1,10 @@
 #!/usr/bin/env python3
 """Download Zenodo data files for the NivoRd v4-DOR manuscript.
 
-The Zenodo record version this script targets is 19988651. The public,
-filename-based URL pattern is:
-
-    https://zenodo.org/records/{record_id}/files/{filename}
-
-These resolve only after the deposit is published (until then, the draft
-files live behind authenticated bucket URLs). This script will give a
-clear error if the URLs cannot be reached and tell you to either wait
-for publication or fetch the files manually from
-https://zenodo.org/uploads/{record_id} (draft) or
-https://zenodo.org/records/{record_id} (published).
-
-Usage:
-    python 00_download_data.py
+Purpose:      Fetch the Zenodo deposit (h5ads, CSVs, GMT, README) into DATA_LOCAL.
+Inputs:       Internet + Zenodo concept DOI 10.5281/zenodo.19430235.
+Outputs:      Files materialised under DATA_LOCAL ("data" relative dir by default, or NIVO_DATA_DIR).
+Dependencies: requests, hashlib, pathlib (stdlib + requests).
 """
 from __future__ import annotations
 import os

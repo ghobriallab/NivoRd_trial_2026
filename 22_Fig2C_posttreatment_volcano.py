@@ -1,4 +1,10 @@
-"""Fig 2C — Post-treatment macrophage DGE volcano under DOR."""
+"""Fig 2C — Post-treatment macrophage DGE volcano under DOR.
+
+Purpose:      Render Figure 2C: Macrophage DGE volcano, post-treatment DR vs P-NR.
+Inputs:       macrophage_posttreatment_DGE_LMM_DOR.csv.
+Outputs:      figures/Fig2C.pdf / .svg.
+Dependencies: matplotlib, pandas, _00_common, _03_volcano_helper.
+"""
 import _00_common as cm
 from _03_volcano_helper import make_volcano
 

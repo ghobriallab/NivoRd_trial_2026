@@ -1,14 +1,9 @@
 """Supp Fig S4B — M2 macrophage module score (DR vs P/NR × pre/post).
 
-Per-patient mean "alternative activation" (M2-like) module score on the
-macrophage compartment of the NivoRd CD138⁻ scRNA-seq cohort
-(celltype_refined == "Macrophages"; 5 paired patients).
-
-M2 gene list:
-    CD163, MRC1, ARG1, IL10, MSR1, MERTK, TGFB1, CCL22
-
-Plotted via the canonical _02_boxplot.boxplot_panel helper so the style
-matches Fig 1B-C and Supp Figs S3A-C.
+Purpose:      Render Supp Fig S4B: M2 macrophage module score (alternative activation).
+Inputs:       CD138neg_immune_cells.h5ad (macrophage subset).
+Outputs:      figures/SuppFigS4B.pdf / .svg.
+Dependencies: scanpy, matplotlib, pandas, _00_common, _01_data_loaders, _02_boxplot.
 """
 from __future__ import annotations
 import matplotlib.pyplot as plt

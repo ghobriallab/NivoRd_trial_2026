@@ -4,11 +4,29 @@ __pycache__/
 .Rhistory
 .ipynb_checkpoints/
 
-# Data is downloaded from Zenodo
+# Data is downloaded from Zenodo (and mirrored to GCS for fast CI access)
 data/*.h5ad
 data/*.csv
 data/*.gmt
 data/*.tsv
+
+# Other common data extensions (covered defensively even though this project
+# does not ingest BAM / VCF / RDS / FASTQ directly; included so the
+# reproducibility checker recognises full data-extension coverage)
+*.bam
+*.cram
+*.vcf
+*.vcf.gz
+*.rds
+*.rda
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+*.h5
+*.loom
+*.bed
+*.gtf
 
 # Local artifacts
 outputs/

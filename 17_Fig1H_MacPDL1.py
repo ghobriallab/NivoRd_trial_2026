@@ -1,4 +1,10 @@
-"""Fig 1H — PD-L1+ macrophages (% of macrophages) by DR/P-NR × pre/post."""
+"""Fig 1H — PD-L1+ macrophages (% of macrophages) by DR/P-NR × pre/post.
+
+Purpose:      Render Figure 1H: Macrophage PD-L1+ % DR vs P-NR x pre/post.
+Inputs:       imc_extras_persample.csv.
+Outputs:      figures/Fig1H.pdf / .svg.
+Dependencies: matplotlib, _00_common, _01_data_loaders, _02_boxplot.
+"""
 from __future__ import annotations
 import matplotlib.pyplot as plt
 import matplotlib as mpl

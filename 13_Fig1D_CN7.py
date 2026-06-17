@@ -1,4 +1,10 @@
-"""Fig 1D — CN7 (macrophage-rich neighborhood, 71% Mac by composition) abundance."""
+"""Fig 1D — CN7 (macrophage-rich neighborhood, 71% Mac by composition) abundance.
+
+Purpose:      Render Figure 1D: CN7 (macrophage-dominant cellular neighborhood) abundance.
+Inputs:       pheno_8clus-sample_pct.csv.
+Outputs:      figures/Fig1D.pdf / .svg.
+Dependencies: matplotlib, _00_common, _01_data_loaders, _02_boxplot.
+"""
 from __future__ import annotations
 import matplotlib.pyplot as plt
 import matplotlib as mpl

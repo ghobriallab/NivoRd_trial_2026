@@ -1,4 +1,10 @@
-"""Fig 1B — CD8+ T cell abundance under DOR."""
+"""Fig 1B — CD8+ T cell abundance under DOR.
+
+Purpose:      Render Figure 1B: CD8+ T cell abundance (% of classified) DR vs P-NR x pre/post.
+Inputs:       imc_extras_persample.csv.
+Outputs:      figures/Fig1B.pdf / .svg via cm.save_fig.
+Dependencies: matplotlib, _00_common, _01_data_loaders, _02_boxplot.
+"""
 from __future__ import annotations
 import matplotlib.pyplot as plt
 import matplotlib as mpl

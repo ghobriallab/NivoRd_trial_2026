@@ -1,7 +1,9 @@
 """Fig 2G + Fig 2H — Zavidij (GSE124310) external validation.
 
-Two outputs: Fig2G.{pdf,svg} (IFN-γ) and Fig2H.{pdf,svg} (TNFα-NFkB).
-Adapted from 2-Scripts/06-Figure2EF_external_validation.py.
+Purpose:      Render Figures 2G,H: external Zavidij cohort Hallmark module scores (IFN-gamma, TNFa/NFkB).
+Inputs:       GEO GSE124310 per-sample 10x matrices (downloaded by Zavidij sub-pipeline).
+Outputs:      figures/Fig2G.pdf / .svg and Fig2H.pdf / .svg.
+Dependencies: scanpy, matplotlib, scipy.stats, _00_common.
 """
 from __future__ import annotations
 import os, ftplib, tarfile, shutil, glob, warnings

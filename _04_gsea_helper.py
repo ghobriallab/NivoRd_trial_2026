@@ -1,4 +1,10 @@
-"""Shared helper for single-panel GSEA bar plots (Fig 2D, Fig 2E)."""
+"""Shared helper for single-panel GSEA bar plots (Fig 2D, Fig 2E).
+
+Purpose:      Pre-ranked GSEA panel helper (Hallmark; DR vs P-NR).
+Inputs:       GSEApy preranked output CSV under DATA_LOCAL.
+Outputs:      GSEA-style barplot rendered via cm.save_fig.
+Dependencies: gseapy, matplotlib, pandas, _00_common.
+"""
 from __future__ import annotations
 import warnings
 import numpy as np

@@ -1,14 +1,9 @@
 """Supp Fig S1 — clinical figures (placeholder).
 
-Swimmer plot, Kaplan-Meier curves, and CONSORT flow diagram are generated
-by the clinical team using clinical CSVs that are not part of this
-portable pipeline (they contain identifiable trial dates). Source scripts
-are at `_archive/pipeline/3_clinical_figures/suppfig1{a,b,c,d,e}.py` and
-require `_data.py` populated with clinical metadata. The CONSORT (panel
-F) is hand-drawn in Illustrator from the trial flow.
-
-This stub writes a placeholder so the figures/ directory has all six
-expected panels.
+Purpose:      Placeholder for Supp Fig S1 (CONSORT diagram and swimmer plot).
+Inputs:       Clinical / trial-flow data (clinical CSV outside the repo).
+Outputs:      Placeholder PDF/SVG under FIG_DIR.
+Dependencies: matplotlib, _00_common.
 """
 from __future__ import annotations
 import matplotlib.pyplot as plt

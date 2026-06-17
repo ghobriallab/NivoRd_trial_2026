@@ -1,8 +1,9 @@
 """Fig 2F — CD86 expression Δ post − pre vs ordinal DOR.
 
-Pre-planned single ordinal Spearman test on a Hallmark IFN-γ leading-edge
-gene (Figure 2E). Macrophage definition: Immune_cell_2 == "CD163+ Macrophages"
-(broad def, n=5 patients, paired pre/post).
+Purpose:      Render Figure 2F: post-pre delta-CD86 expression vs DOR_ordinal (Spearman).
+Inputs:       CD138neg_immune_cells.h5ad (macrophages subset).
+Outputs:      figures/Fig2F.pdf / .svg.
+Dependencies: scanpy, matplotlib, scipy.stats, _00_common, _01_data_loaders.
 """
 from __future__ import annotations
 import warnings

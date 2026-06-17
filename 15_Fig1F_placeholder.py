@@ -1,7 +1,9 @@
 """Fig 1F — Representative IMC composites (placeholder).
 
-Cannot be regenerated without raw 34-channel IMC TIFFs.
-Source script: `_archive/pipeline/1_canonical_IMC/fig1D_imc_composite.py`.
+Purpose:      Placeholder for Figure 1F image composite (IMC multichannel snapshots).
+Inputs:       Per-image IMC channel snapshots assembled outside this script.
+Outputs:      Placeholder under FIG_DIR.
+Dependencies: matplotlib, _00_common.
 """
 from __future__ import annotations
 import matplotlib.pyplot as plt

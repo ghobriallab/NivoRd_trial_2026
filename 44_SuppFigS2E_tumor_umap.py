@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Supplementary Figure S2E: CD138+ bone marrow plasma cell UMAP by patient."""
+"""Supplementary Figure S2E: CD138+ bone marrow plasma cell UMAP by patient.
+
+Purpose:      Render Supp Fig S2E: CD138+ tumor UMAP coloured by patient.
+Inputs:       CD138pos_tumor_cells.h5ad.
+Outputs:      figures/SuppFigS2E.pdf / .svg.
+Dependencies: scanpy, matplotlib, _00_common, _01_data_loaders.
+"""
 
 import anndata as ad
 import scanpy as sc

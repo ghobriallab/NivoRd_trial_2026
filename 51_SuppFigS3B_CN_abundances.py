@@ -1,12 +1,9 @@
 """Supp Fig S3B — Cellular neighborhood abundances (mega-panel, 2 sub-panels).
 
-Sub-panels (left to right):
-  (i)  CN4 — plasma-cell-rich (77% PC)
-  (ii) CN2 — PC-Mac contact zone (30% PC + 24% Mac)
-
-CN7 (macrophage-rich, 71% Mac) is shown in main Figure 1D, so omitted here.
-CN3 (47% Myeloid + 37% Mac) is myeloid-rich and not biologically relevant
-to the PC compartment, so omitted.
+Purpose:      Render Supp Fig S3B: per-sample CN abundance summary (CN4, CN2).
+Inputs:       pheno_8clus-sample_pct.csv.
+Outputs:      figures/SuppFigS3B.pdf / .svg.
+Dependencies: matplotlib, _00_common, _01_data_loaders, _02_boxplot.
 """
 from __future__ import annotations
 import matplotlib.pyplot as plt

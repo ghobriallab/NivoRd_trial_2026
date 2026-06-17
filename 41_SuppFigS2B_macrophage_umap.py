@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Supplementary Figure S2B: CD138- immune UMAP with macrophages highlighted."""
+"""Supplementary Figure S2B: CD138- immune UMAP with macrophages highlighted.
+
+Purpose:      Render Supp Fig S2B: UMAP of CD138- cells with macrophages highlighted.
+Inputs:       CD138neg_immune_cells.h5ad.
+Outputs:      figures/SuppFigS2B.pdf / .svg.
+Dependencies: scanpy, matplotlib, _00_common, _01_data_loaders.
+"""
 
 import anndata as ad
 import matplotlib.pyplot as plt

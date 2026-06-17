@@ -1,31 +1,9 @@
 """Per-cell linear mixed model DGE for macrophages, post-treatment and
-pre-treatment, under DOR classification.
 
-Recipe (matches Methods text):
-  expression ~ Group + (1|Patient)
-  statsmodels MixedLM (REML, lbfgs)
-  >=5% expression in at least one group
-  >=5 cells per patient
-  Sex-chromosome and MT- genes excluded
-  BH-FDR within the gene set tested
-  Output thresholds reported: FDR<0.05, |log2FC|>0.5
-
-Macrophage definition: celltype_refined == "Macrophages" (narrow).
-Selected after a side-by-side audit (see scripts/outputs/mac_def_audit/):
-the broader Immune_cell_2 == "CD163+ Macrophages" set is 96%
-classical-monocyte by transcriptional signature (CD14+/S100A8/9+/VCAN+
-/FCN1+/CXCL8+), whereas the refined annotation captures the canonical
-FCGR3A+/MS4A7+/C1Q+ macrophage population. Post-treatment effective
-cohort under this def is Pt04 (P-NR), Pt05 (DR), Pt06 (DR) after the
->=5 cells/patient filter; pre-treatment is Pt01, Pt03, Pt04, Pt06, Pt07.
-
-Outputs:
-  outputs/macrophage_posttreatment_DGE_LMM_DOR.csv
-  outputs/macrophage_pretreatment_DGE_LMM_DOR.csv
-  outputs/dge_summary.txt          (counts at FDR<0.05 / |LFC|>0.5)
-
-scRNA cohort under DOR: DR = {Pt05, Pt06, Pt07}; P-NR = {Pt01, Pt04}.
-(Identical to COT in the scRNA cohort because Pt08 is excluded for QC.)
+Purpose:      Per-cell linear mixed-effects DGE (DR vs P-NR) on pre- and post-treatment macrophages.
+Inputs:       CD138neg_immune_cells.h5ad (NivoRd cohort macrophages).
+Outputs:      {macrophage_pretreatment,macrophage_posttreatment}_DGE_LMM_DOR.csv in OUT_DIR.
+Dependencies: anndata, statsmodels MixedLM, scipy.stats, pandas, _00_common.
 """
 from __future__ import annotations
 import warnings

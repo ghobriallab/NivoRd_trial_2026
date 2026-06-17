@@ -1,13 +1,9 @@
 """Supp Fig S3C — Ordinal-DOR correlates (mega-panel, 3 sub-panels).
 
-Each sub-panel is a Spearman scatter against ordinal IMWG depth of
-response (SD=1, PR=2, VGPR=3, CR=4):
-  (i)   Post-treatment CN4 abundance (single pre-specified test for the
-        spatial axis; rho = -0.91, p = 0.001, BH-q = 0.035 within the CN
-        family — the only neighborhood finding to survive BH-FDR).
-  (ii)  Delta macrophage PD-L1+ % (post - pre); graded version of the
-        dichotomized macrophage-PD-L1 finding in main Figure 1H.
-  (iii) Baseline plasma-cell PD-L1+ %; exploratory baseline biomarker.
+Purpose:      Render Supp Fig S3C: DOR_ordinal correlations (CN4, Mac PD-L1, baseline PC PD-L1).
+Inputs:       imc_extras_persample.csv + pheno_8clus-sample_pct.csv.
+Outputs:      figures/SuppFigS3C.pdf / .svg.
+Dependencies: matplotlib, scipy.stats, _00_common, _01_data_loaders.
 """
 from __future__ import annotations
 import numpy as np

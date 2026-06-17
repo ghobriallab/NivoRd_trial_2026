@@ -1,6 +1,9 @@
 """Fig 2A — CD138− BM immune cell UMAP, colored by cell type.
 
-Adapted from 2-Scripts/03-Figure2A_immune_umap.py.
+Purpose:      Render Figure 2A: CD138- immune UMAP coloured by celltype_refined.
+Inputs:       CD138neg_immune_cells.h5ad.
+Outputs:      figures/Fig2A.pdf / .svg.
+Dependencies: scanpy, matplotlib, _00_common, _01_data_loaders.
 """
 from __future__ import annotations
 import warnings

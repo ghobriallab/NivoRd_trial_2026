@@ -1,4 +1,10 @@
-"""Shared helper for single-panel volcano plots (Fig 2B, Fig 2C)."""
+"""Shared helper for single-panel volcano plots (Fig 2B, Fig 2C).
+
+Purpose:      Volcano plot helper for DR vs P-NR DGE outputs (LMM CSV).
+Inputs:       Per-cell DGE CSV under DATA_LOCAL.
+Outputs:      Returns (n_up_DR, n_up_PNR); writes <name>.pdf/.svg via cm.save_fig.
+Dependencies: matplotlib, pandas, numpy, _00_common.
+"""
 from __future__ import annotations
 import warnings
 import numpy as np

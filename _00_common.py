@@ -1,21 +1,9 @@
 """Shared helpers for the manuscript_v4_DOR figure pipeline.
 
-DOR = IMWG depth of response. Primary classifier for this manuscript:
-  DR    = deep responders, VGPR or CR best response (n=4)
-  P-NR  = partial / non-responders, PR or SD best response (n=4)
-
-Per IMWG criteria, PR is a recognized response; the binary contrast in
-this manuscript reflects depth of response (>=VGPR vs <VGPR), not
-presence vs absence of response. Code-side identifiers use the
-hyphenated `P-NR`; prose / figure legends render this as `P/NR`.
-
-Ordinal scale (SD=1, PR=2, VGPR=3, CR=4) is the additional analytic frame
-used for one pre-planned Spearman test per axis.
-
-For sensitivity / robustness reporting only, COT (manuscript's published
-change-of-treatment-within-24-mo rule) and FAST (biochemical PD within
-12 mo) are also defined; their group labels follow the same DR / P-NR
-convention to keep downstream code uniform.
+Purpose:      Shared paths, classifier dicts, palettes, statistics helpers, save_fig.
+Inputs:       None (importable module).
+Outputs:      None (sets up FIG_DIR / OUT_DIR / LOG_DIR on import).
+Dependencies: numpy, pandas, scipy.stats.
 """
 from __future__ import annotations
 from pathlib import Path

@@ -1,10 +1,9 @@
 """Box-plot helper used by Fig 1B/1D/1F/Supp boxplots.
 
-Layout per panel (matches original IMC_figures.Rmd aesthetic):
-  4 boxes left->right: DR-pre, DR-post, P-NR-pre, P-NR-post.
-  Patient-paired connector lines for pre->post within each group.
-  Brackets with stars for default comparisons (paired t for same-group
-  pre vs post; Welch t for between-group).
+Purpose:      Canonical 4-box DR/P-NR x pre/post boxplot helper (boxplot_panel + save_legend).
+Inputs:       DataFrame with Pt, Tp, value columns; classifier dict (DOR / COT / FAST).
+Outputs:      Matplotlib Axes mutated in place; save_legend writes <name>.pdf/svg.
+Dependencies: matplotlib, numpy, pandas, scipy.stats, _00_common.
 """
 from __future__ import annotations
 import warnings

@@ -1,16 +1,9 @@
 """Supp Fig S2C — Mean IMC marker expression by lineage class (heatmap).
 
-Regenerated from the IMC h5ad (`IMC-import.h5ad`) with phenotype
-assignments from `phenotyped_canonical.csv`. Mean expression is computed
-per (cell_type, marker) and min-max scaled per column so each marker's
-maximum cell-type signal = 1.0, matching scanpy's `matrixplot` "scale"
-output convention used in the published version.
-
-Markers shown match the published panel:
-  CD163, CD11b, CD31, CD45, CD4, CD68, CD20, CD8a, CD56, CD138, CD3, PDL1
-Cell types: B, MK, Mac, Myeloid, PC, T4, T8 (Unclassified excluded).
-
-Output: figures/SuppFigS2C.{pdf,svg}
+Purpose:      Render Supp Fig S2C: IMC marker x cluster heatmap.
+Inputs:       IMC-import.h5ad + phenotyped_canonical.csv.
+Outputs:      figures/SuppFigS2C.pdf / .svg.
+Dependencies: scanpy, matplotlib, pandas, _00_common, _01_data_loaders.
 """
 from __future__ import annotations
 import warnings

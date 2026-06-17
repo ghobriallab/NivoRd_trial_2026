@@ -1,16 +1,9 @@
 """Supp Fig S4C — CD8 activation/exhaustion marker dot plot.
 
-Per-cell expression of canonical CD8 activation markers (GZMA, GZMB, GZMK,
-PRF1, IFNG, TNF, IL2) and exhaustion-associated markers (PDCD1, LAG3,
-HAVCR2, TIGIT, CTLA4, TOX, EOMES) across NivoRd CD138⁻ scRNA-seq CD8 T cells
-(Naive + GZMK⁺ Effector + GZMB⁺ Effector subsets pooled; 5 paired patients).
-
-Dot SIZE  = % of cells with non-zero expression of the gene (detection rate).
-Dot COLOR = mean log-normalised expression across all cells in the group.
-
-Detection-aware visualisation (a Cohen's d heatmap would be misleading because
-most exhaustion-associated transcripts are detected in <15% of CD8 T cells in
-this BM cohort; this dot plot makes that detection-rate context explicit).
+Purpose:      Render Supp Fig S4C: CD8 activation/exhaustion marker dot plot (detection-aware).
+Inputs:       CD138neg_immune_cells.h5ad (CD8 subsets pooled).
+Outputs:      figures/SuppFigS4C.pdf / .svg.
+Dependencies: matplotlib, numpy, pandas, _00_common, _01_data_loaders.
 """
 from __future__ import annotations
 import matplotlib.pyplot as plt

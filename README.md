@@ -25,6 +25,22 @@ Scripts are numbered to indicate logical/execution order. Bare numeric
 prefixes (`00_`, `01_`, …) mark scripts you run directly; underscore +
 numeric prefixes (`_00_`, `_01_`, …) mark importable helper modules.
 
+### Data via Google Cloud Storage (fast CI / re-analysis path)
+
+The Zenodo bundle is also mirrored to a GCS bucket so that automated re-runs
+(e.g., CI workflows and the reproducibility checker) can pull the data
+without going through Zenodo's rate limits. To fetch with `gsutil`:
+
+```bash
+# Authenticate once: gcloud auth application-default login
+gsutil -m cp -r gs://ghobrial-nivord-data/v3/* ./data/
+```
+
+The bucket mirrors the Zenodo v3 deposit content (concept DOI
+`10.5281/zenodo.19430235`; version DOI `10.5281/zenodo.20044249`). If you do
+not have GCS access, fall back to `python 00_download_data.py` which fetches
+the same files via Zenodo's REST API.
+
 By default `00_download_data.py` writes into `./data/`. Override with
 `NIVO_DATA_DIR=/some/other/path python 00_download_data.py`. The same
 variable is read by `_00_common.py` so figure scripts will pick up the
