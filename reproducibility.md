@@ -1,5 +1,24 @@
 # Reproducibility History
 
+## 2026-08-01 — Score: 100/100 (Good)
+
+| Category | Score |
+|----------|-------|
+| Step Ordering | 20/20 |
+| Documentation | 25/25 |
+| Path Hygiene | 20/20 |
+| Gcs Data Handling | 15/15 |
+| Naming Conventions | 10/10 |
+| Phi   Credential Safety | 10/10 |
+
+**Top issues:**
+- [Step Ordering] 6/39 scripts lack a numeric prefix (e.g. 01_, 02_): _01_data_loaders.py, _04_gsea_helper.py, _02_boxplot.py (+3 more)
+
+_Run at 2026-08-01T09:52:30Z by [run-reproducibility-check](https://github.com/ghobriallab/NivoRd_trial_2026/actions/runs/30694595531)_
+
+---
+
+
 ## 2026-07-25 — Score: 100/100 (Good)
 
 | Category | Score |
